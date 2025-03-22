@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:vama_mobile/pages/signPage.dart';
-import 'pages/loginPage.dart';
+import 'package:vama_mobile/pages/sign_page.dart';
+import 'pages/login_page.dart';
 
 void main() {
   runApp(const MyApp());

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:vama_mobile/components/myButton.dart';
-import 'package:vama_mobile/components/myTextfield.dart';
-import 'package:vama_mobile/components/myHeader.dart';
+import 'package:vama_mobile/components/my_button.dart';
+import 'package:vama_mobile/components/my_textfield.dart';
+import 'package:vama_mobile/components/my_header.dart';
 
 class SignPage extends StatefulWidget{
-  SignPage ({super.key});
+  const SignPage ({super.key});
 
   @override
   State<SignPage> createState() => _SignPageState();
