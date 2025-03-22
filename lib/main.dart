@@ -3,11 +3,11 @@ import 'package:vama_mobile/pages/sign_page.dart';
 import 'pages/login_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const App());
 }
-// test
-class MyApp extends StatelessWidget{
-  const MyApp ({super.key});
+
+class App extends StatelessWidget{
+  const App ({super.key});
 
   @override
   Widget build (BuildContext context){
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget{
       //Routes
       routes: {
         '/login':(context)=>LoginPage(),
-        '/signUp':(context)=>SignPage(),
+        '/signup':(context)=>SignPage(),
       },
     );
   }

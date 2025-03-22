@@ -15,7 +15,9 @@ class _SignPageState extends State<SignPage> {
   final passwordController = TextEditingController();
 
   //sign user in method
-  void signUserIn(){}
+  void signUser(){
+    throw UnimplementedError();
+  }
 
   //checkbox
   bool _isChecked = false;
@@ -97,7 +99,7 @@ class _SignPageState extends State<SignPage> {
 
                     //sign in
                     Mybutton(
-                      onTap: signUserIn,
+                      onTap: signUser,
                     ),
                   ],
                 )

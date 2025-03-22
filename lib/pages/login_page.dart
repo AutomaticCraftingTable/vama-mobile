@@ -11,7 +11,9 @@ class LoginPage extends StatelessWidget{
   final passwordController = TextEditingController();
 
   //sign user in method
-   void loginUserIn(){}
+   void loginUser(){
+     throw UnimplementedError();
+   }
 
    @override
   Widget build(BuildContext context) {
@@ -67,7 +69,7 @@ class LoginPage extends StatelessWidget{
 
               //login in
               Mybutton(
-                onTap: loginUserIn,
+                onTap: loginUser,
               ),
             ],
           )
