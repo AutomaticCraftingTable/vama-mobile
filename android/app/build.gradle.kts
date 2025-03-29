@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.vama_mobile"
-    compileSdk = 34
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

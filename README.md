@@ -1,5 +1,5 @@
 # vama_mobile
-[app](android%2Fapp)
+
 A new Flutter project.
 
 ## Getting Started

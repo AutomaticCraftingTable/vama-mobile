@@ -1,0 +1,16 @@
+networks:
+    vama-mobile-dev:
+        driver: bridge
+
+services:
+    app:
+        build:
+            context: ./environment/app
+            dockerfile: Dockerfile
+        container_name: vama-mobile-app-dev
+        working_dir: /application
+        volumes:
+            - .:/application
+        networks:
+            - vama-mobile-dev
+        restart: unless-stopped
