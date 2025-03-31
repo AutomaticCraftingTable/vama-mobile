@@ -1,16 +1,13 @@
-networks:
-    vama-mobile-dev:
-        driver: bridge
-
 services:
     app:
         build:
             context: ./environment/app
             dockerfile: Dockerfile
         container_name: vama-mobile-app-dev
+        network_mode: "host"
         working_dir: /application
         volumes:
             - .:/application
-        networks:
-            - vama-mobile-dev
+        stdin_open: true
+        tty: true
         restart: unless-stopped

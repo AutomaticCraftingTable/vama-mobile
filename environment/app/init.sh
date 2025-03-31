@@ -4,3 +4,5 @@ set -e
 
 flutter config --no-analytics
 flutter pub get
+
+flutter build apk
