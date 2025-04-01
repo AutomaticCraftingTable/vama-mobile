@@ -1,7 +1,11 @@
 set quiet := true
 
+EMULATOR_NAME := "spoko"
 ADB_PORT := "5037"
 DOCKER_APP_SERVICE := "app"
+
+run-host-emulator:
+    powershell.exe -Command "emulator -avd {{EMULATOR_NAME}} -no-snapshot"
 
 add-env-var name value:
     touch .env
@@ -15,7 +19,6 @@ wsl-create-env:
     just add-env-var ADB_SERVER_SOCKET "tcp:$HOST_IP:{{ADB_PORT}}"
 
 wsl-connect-adb:
-    just wsl-create-env
     powershell.exe -Command "adb kill-server; adb -a -P {{ADB_PORT}} start-server"
 
 dexec param:
@@ -41,7 +44,7 @@ remove:
     docker compose down -v --remove-orphans
 
 dev:
-    just dexec "flutter run"
+    just dexec "flutter run" > /dev/null 2>&1 &
 
 dshell:
     just dexec "bash"
