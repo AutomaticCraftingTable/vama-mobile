@@ -1,15 +1,11 @@
 services:
     app:
-        env_file:
-            - .env
-        build:
-            context: ./environment/app
-            dockerfile: Dockerfile
+        build: .
         container_name: vama-mobile-app-dev
-        network_mode: "host"
-        working_dir: /application
+        network_mode: host
+        working_dir: /${PROJECT_DIR:-application}
         volumes:
-            - .:/application
+            - ./${PROJECT_DIR:-application}:/${PROJECT_DIR:-application}
         stdin_open: true
         tty: true
         restart: unless-stopped

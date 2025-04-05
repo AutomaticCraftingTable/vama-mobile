@@ -1,50 +1,55 @@
+set dotenv-load := true
 set quiet := true
 
-EMULATOR_NAME := "spoko"
-ADB_PORT := "5037"
 DOCKER_APP_SERVICE := "app"
 
-run-host-emulator:
-    powershell.exe -Command "emulator -avd {{EMULATOR_NAME}} -no-snapshot"
+container-create-project:
+    just container-exec "flutter create --platforms=android ."
 
-add-env-var name value:
+env-addvar name value:
     touch .env
     sed -i "/^{{name}}=/d" ".env"
     echo "{{name}}={{value}}" >> .env
 
-wsl-create-env:
+wsl-add-env:
     #!/bin/sh
-    POWERSHELL_LOCAL_IP_ADDRESSES="(Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias (Get-NetConnectionProfile | Select-Object -ExpandProperty InterfaceAlias)).IPAddress"
-    HOST_IP=$(powershell.exe -Command $POWERSHELL_LOCAL_IP_ADDRESSES | grep "192.168" | tr -d '\r')
-    just add-env-var ADB_SERVER_SOCKET "tcp:$HOST_IP:{{ADB_PORT}}"
+    HOST_IP=$(ip route show | grep -i default | awk '{ print $3}')
+    just env-addvar ADB_SERVER_SOCKET "tcp:$HOST_IP:$ADB_PORT"
+
+wsl-run-emulator:
+    powershell.exe -Command "emulator -avd $EMULATOR_NAME -no-snapshot"
 
 wsl-connect-adb:
-    powershell.exe -Command "adb kill-server; adb -a -P {{ADB_PORT}} start-server"
+    powershell.exe -Command "adb -a -P $ADB_PORT start-server"
 
-dexec param:
-    docker compose exec {{DOCKER_APP_SERVICE}} sh -c "{{param}}"
-
-init:
+container-init:
+    mkdir -p $PROJECT_DIR
     docker compose kill
     docker compose up -d --remove-orphans --build
-    just dexec "sh ./environment/app/init.sh"
+    cp -n ./environment/app/justfile ./application/justfile
 
-rebuild:
-    just remove
+container-rebuild:
+    just container-remove
     docker compose build --no-cache
 
-start:
+container-start:
     docker compose up -d
 
-stop:
+container-stop:
     docker compose stop
 
-remove:
+container-remove:
     docker compose kill
     docker compose down -v --remove-orphans
 
-dev:
-    just dexec "flutter run" > /dev/null 2>&1 &
+container-exec params:
+    docker compose exec {{DOCKER_APP_SERVICE}} bash -c "{{params}}"
 
-dshell:
-    just dexec "bash"
+container-shell:
+    just container-exec "bash"
+
+test:
+    sudo rm -rf application
+    just container-init
+    just container-create-project
+    rm -rf application/*

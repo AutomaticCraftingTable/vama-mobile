@@ -1,16 +1,31 @@
-# vama_mobile
+# VAMA - mobile
+Klient mobilny projektu VAMA
+## Konfiguracja aplikacji
+### Instalacja zależności:
+- Należy zainstalować `just`
+- Należy zainstalować `docker`
+#### Instalacja `just` w systemie z menedżerem pakietów snap:
+```sh
+sudo snap install just --classic
+```
+### Inicjalizacja projektu:
 
-A new Flutter project.
+#### Linux
+```sh
+cp .env.example .env
+```
 
-## Getting Started
+#### WSL
+```sh
+cp .env.example .env
+```
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Komendy
+#### Aby zatrzymać kontener:
+```sh
+just stop
+```
+#### Jeśli już zainicjalizowałeś projekt i chcesz tylko uruchomić kontener:
+```sh
+just start
+```
