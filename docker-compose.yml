@@ -1,7 +1,11 @@
 services:
     app:
-        build: .
         container_name: vama-mobile-app-dev
+        build: 
+            context: .
+            args:
+                USER_ID: ${UID:-1000}
+                GROUP_ID: ${GID:-1000}
         network_mode: host
         working_dir: /${PROJECT_DIR:-application}
         volumes:

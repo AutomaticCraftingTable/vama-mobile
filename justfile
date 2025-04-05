@@ -3,9 +3,6 @@ set quiet := true
 
 DOCKER_APP_SERVICE := "app"
 
-container-create-project:
-    just container-exec "flutter create --platforms=android ."
-
 env-addvar name value:
     touch .env
     sed -i "/^{{name}}=/d" ".env"
@@ -23,10 +20,10 @@ wsl-connect-adb:
     powershell.exe -Command "adb -a -P $ADB_PORT start-server"
 
 container-init:
-    mkdir -p $PROJECT_DIR
+    mkdir -p ./$PROJECT_DIR
     docker compose kill
     docker compose up -d --remove-orphans --build
-    cp -n ./environment/app/justfile ./application/justfile
+    cp -n ./environment/{{DOCKER_APP_SERVICE}}/* ./$PROJECT_DIR
 
 container-rebuild:
     just container-remove
@@ -47,9 +44,3 @@ container-exec params:
 
 container-shell:
     just container-exec "bash"
-
-test:
-    sudo rm -rf application
-    just container-init
-    just container-create-project
-    rm -rf application/*
