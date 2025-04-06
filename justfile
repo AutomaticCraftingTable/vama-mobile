@@ -4,7 +4,7 @@ set quiet := true
 DOCKER_APP_SERVICE := "app"
 
 env-addvar name value:
-    cp -n .env.example .env || touch .env
+    cp --update=none .env.example .env || touch .env
     sed -i "/^{{name}}=/d" ".env"
     echo "{{name}}={{value}}" >> .env
 
@@ -24,7 +24,7 @@ container-init:
     mkdir -p ./$PROJECT_DIR
     docker compose kill
     docker compose up -d --remove-orphans --build
-    cp -n ./environment/{{DOCKER_APP_SERVICE}}/include/* ./$PROJECT_DIR
+    cp --update=none ./environment/{{DOCKER_APP_SERVICE}}/include/* ./$PROJECT_DIR
 
 container-rebuild:
     just container-remove

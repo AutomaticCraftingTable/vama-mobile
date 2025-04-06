@@ -11,6 +11,7 @@ sudo snap install just --classic
 ### Inicjalizacja konteneru:
 #### WSL
 ```sh
+cp .env.example .env
 just wsl-add-env
 just container-init
 ```
