@@ -1,15 +1,17 @@
 services:
     app:
+        env_file:
+            - .env
         container_name: vama-mobile-app-dev
         build: 
-            context: .
+            context: ./environment/app
             args:
                 USER_ID: ${UID:-1000}
                 GROUP_ID: ${GID:-1000}
         network_mode: host
-        working_dir: /${PROJECT_DIR:-application}
         volumes:
-            - ./${PROJECT_DIR:-application}:/${PROJECT_DIR:-application}
+            - ./:/application
+        working_dir: /application/${PROJECT_DIR}
         stdin_open: true
         tty: true
         restart: unless-stopped

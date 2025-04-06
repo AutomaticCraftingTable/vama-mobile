@@ -1,6 +1,7 @@
 FROM instrumentisto/flutter:3.29
 
 RUN chmod -R a+rw /usr/local/flutter/packages/flutter_tools
+RUN chmod -R a+rw /opt/android-sdk-linux
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl ca-certificates \
