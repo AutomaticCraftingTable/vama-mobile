@@ -14,6 +14,7 @@ wsl-add-env:
     just env-addvar ADB_SERVER_SOCKET "tcp:$HOST_IP:$ADB_PORT"
 
 wsl-connect-adb:
+    powershell.exe -Command "adb kill-server"
     powershell.exe -Command "adb -a -P $ADB_PORT start-server"
 
 wsl-run-emulator:
