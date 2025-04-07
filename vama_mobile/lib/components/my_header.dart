@@ -40,7 +40,7 @@ class  Myheader  extends StatelessWidget {
               //button signup
               ElevatedButton(
                 onPressed: (){
-                  Navigator.pushNamed(context, '/signUp');
+                  Navigator.pushNamed(context, '/signup');
                 },
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,

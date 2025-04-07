@@ -1,16 +1,43 @@
-# vama_mobile
-[app](android%2Fapp)
-A new Flutter project.
+# VAMA - mobile
+Klient mobilny projektu VAMA
+## Konfiguracja lokalnego rozwoju
+### Instalacja zależności:
+- Należy zainstalować `just`
+- Należy zainstalować `docker`
+#### Instalacja `just` w systemie z menedżerem pakietów `snap`:
+```sh
+sudo snap install just --classic
+```
+### Inicjalizacja konteneru:
+#### WSL
+```sh
+cp .env.example .env
+just wsl-add-env
+just container-init
+```
+#### Linux / WSL with network mirroring (Windows 11 only)
+```sh
+cp .env.example .env
+just container-init
+```
 
-## Getting Started
+### Inicjalizacja emulatora:
 
-This project is a starting point for a Flutter application.
+#### Linux
+```
+just run-emulator
+```
+#### WSL
+Dla WSL należy uruchomić emulator zainstalowany na maszynie z systemem Windows, aby uzyskać najlepszą wydajność.
 
-A few resources to get you started if this is your first Flutter project:
+- Należy ustawić nazwę swojego emulatora w pliku .env
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Następnie uruchomić:
+    ```sh
+    just wsl-run-emulator
+    ```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Rozwój w devcontainerze (VS Code)
+Aby uzyskać linting Flutera w VS Code, należy:
+- Zainstalować rozszerzenie devcontainers
+- `Ctrl` + `Shift` + `P` -> "Dev Containers: Reopen in Containier"

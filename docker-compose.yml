@@ -1,0 +1,29 @@
+services:
+    app:
+        env_file:
+            - .env
+        container_name: vama-mobile-app-dev
+        build: 
+            context: ./environment/app
+            args:
+                USER_ID: ${UID:-1000}
+                GROUP_ID: ${GID:-1000}
+        network_mode: host
+        volumes:
+            - ./:/application
+        working_dir: /application/${PROJECT_DIR}
+        stdin_open: true
+        tty: true
+        restart: unless-stopped
+
+    emulator:
+        container_name: vama-mobile-emulator-dev
+        build: ./environment/emulator
+        ports:
+            - 6080:6080
+            - 5555:5555
+        devices:
+            - "/dev/kvm:/dev/kvm"
+        privileged: true
+        stdin_open: true
+        restart: unless-stopped
