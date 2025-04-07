@@ -25,4 +25,3 @@ ENV PROMPT_FORMAT="\[\e[34m\][\u@docker:\[\e[35m\]\w\[\e[34m\]]$\[\e[0m\] "
 
 RUN echo 'export PS1=$PROMPT_FORMAT' \
  >> /home/${USERNAME}/.bashrc
-
