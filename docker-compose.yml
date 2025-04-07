@@ -15,3 +15,15 @@ services:
         stdin_open: true
         tty: true
         restart: unless-stopped
+
+    emulator:
+        container_name: vama-mobile-emulator-dev
+        build: ./environment/emulator
+        ports:
+            - 6080:6080
+            - 5555:5555
+        devices:
+            - "/dev/kvm:/dev/kvm"
+        privileged: true
+        stdin_open: true
+        restart: unless-stopped

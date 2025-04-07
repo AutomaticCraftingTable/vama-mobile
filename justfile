@@ -2,6 +2,7 @@ set dotenv-load := true
 set quiet := true
 
 DOCKER_APP_SERVICE := "app"
+DOCKER_EMULATOR_SERVICE := "emulator"
 
 env-addvar name value:
     cp --update=none .env.example .env || touch .env
@@ -20,10 +21,18 @@ wsl-run-emulator:
     just wsl-connect-adb
     nohup powershell.exe -Command "emulator -avd $EMULATOR_NAME -no-snapshot" &
 
+run-emulator:
+    docker compose up --remove-orphans {{DOCKER_EMULATOR_SERVICE}}
+    just stop-emulator
+
+stop-emulator:
+    docker compose kill {{DOCKER_EMULATOR_SERVICE}}
+    docker compose down {{DOCKER_EMULATOR_SERVICE}}
+
 container-init:
     mkdir -p ./$PROJECT_DIR
     docker compose kill
-    docker compose up -d --remove-orphans --build
+    docker compose up -d --remove-orphans --build {{DOCKER_APP_SERVICE}}
     cp --update=none ./environment/{{DOCKER_APP_SERVICE}}/include/* ./$PROJECT_DIR
 
 container-rebuild:
@@ -45,3 +54,9 @@ container-exec *params:
 
 container-shell:
     just container-exec bash
+
+docker-system-clean:
+    docker stop $(docker ps -q)
+    docker rm $(docker ps -a -q)
+    docker rmi $(docker images -q)
+    docker system prune -a --volumes -f
