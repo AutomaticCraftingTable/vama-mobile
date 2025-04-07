@@ -24,20 +24,20 @@ just container-init
 ### Inicjalizacja emulatora:
 
 #### Linux
-Not implemented yet
+```
+just run-emulator
+```
 #### WSL
-For WSL you'd have to run the emulator installed on your windows machine, for the best performance.
+Dla WSL należy uruchomić emulator zainstalowany na maszynie z systemem Windows, aby uzyskać najlepszą wydajność.
 
-- Set the name of your emulator in `.env` file
+- Należy ustawić nazwę swojego emulatora w pliku .env
 
-- Then run:
+- Następnie uruchomić:
     ```sh
     just wsl-run-emulator
     ```
 
-### Development in a devcontainer (VS Code)
-In order to get flutter's linting in VS Code, you'd have to:
-- Install the `devcontainers` extension
+### Rozwój w devcontainerze (VS Code)
+Aby uzyskać linting Flutera w VS Code, należy:
+- Zainstalować rozszerzenie devcontainers
 - `Ctrl` + `Shift` + `P` -> "Dev Containers: Reopen in Containier"
-
-This is not the best approach, since you can't open the terminal of your host from the contanier (unless you use SSH).
