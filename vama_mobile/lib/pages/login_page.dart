@@ -1,80 +1,78 @@
 import 'package:flutter/material.dart';
-import 'package:vama_mobile/components/my_button.dart';
-import 'package:vama_mobile/components/my_textfield.dart';
-import 'package:vama_mobile/components/my_header.dart';
+import 'package:vama_mobile/components/log_in_button.dart';
+import 'package:vama_mobile/components/textfield.dart';
+import 'package:vama_mobile/components/header.dart';
 
-class LoginPage extends StatelessWidget{
-   LoginPage ({super.key});
+class LoginPage extends StatelessWidget {
+  LoginPage({super.key});
 
-  //text editing controllers
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  //sign user in method
-   void loginUser(){
-     throw UnimplementedError();
-   }
+  void loginUser() {
+    throw UnimplementedError();
+  }
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       body: SafeArea(
-        child:Center(
-          child:Column(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-
-              //Header
               Myheader(),
 
-              const SizedBox(height: 30,),
+              const SizedBox(height: 30),
 
-              //Welcome
               Text(
-                  "Welcome to VAMA!",
+                "Witamy w VAMA!",
                 style: TextStyle(
-                    color: Colors.black,
-                        fontSize: 32,
+                  color: Colors.black,
+                  fontSize: 24,
                 ),
               ),
 
-              //Second Text
+              const SizedBox(height: 8),
+
               Text(
-                "Please log in to your account.",
-                   style: TextStyle(
-                     color: Colors.black,
-                     fontSize: 24,
-                   ),
+                "Zaloguj się na swoje konto.",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                ),
               ),
 
-              const SizedBox(height: 20,),
+              const SizedBox(height: 30),
 
-              //Username Textfield
               MyTextField(
                 controller: usernameController,
-                hintText: 'Username',
-                obscureText: false,
+                hintText: 'Nazwa użytkownika',
+                isPassword: false,
               ),
 
-              const SizedBox(height: 20,),
+              const SizedBox(height: 20),
 
-              //Password Textfield
               MyTextField(
                 controller: passwordController,
-                hintText: 'Password',
-                obscureText: true,
+                hintText: 'Hasło',
+                isPassword: true,
               ),
 
-              const SizedBox(height: 20,),
+              const SizedBox(height: 30),
 
-              //login in
               Mybutton(
                 onTap: loginUser,
               ),
+
+              const SizedBox(height: 100), 
             ],
-          )
-        )
-      )
+          ),
+        ),
+      ),
     );
   }
 }

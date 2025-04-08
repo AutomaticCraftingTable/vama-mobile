@@ -8,21 +8,10 @@ class  Myheader  extends StatelessWidget {
     return  Container(
       padding: EdgeInsets.symmetric(horizontal: 5 , vertical: 5),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-
-          //Button for return to home
-          IconButton(
-            onPressed: () {
-              throw UnimplementedError();
-            },
-            icon: Icon(Icons.arrow_back_ios_new, color: Colors.black),
-          ),
-
           Row(
             children: [
-
-              //button login
               ElevatedButton(
                 onPressed: (){
                   Navigator.pushNamed(context, '/login');
@@ -30,14 +19,14 @@ class  Myheader  extends StatelessWidget {
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.black,
                   backgroundColor: Colors.grey[300],
-                  padding: EdgeInsets.symmetric(horizontal: 20 , vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 10 , vertical: 5),
                 ),
-                child: Text("Log in"),
+                child: Text("Zaloguj się"),
               ),
 
-              SizedBox(width: 10),
+              SizedBox(width: 5),
 
-              //button signup
+              
               ElevatedButton(
                 onPressed: (){
                   Navigator.pushNamed(context, '/signup');
@@ -45,12 +34,13 @@ class  Myheader  extends StatelessWidget {
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(horizontal: 20 , vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 10 , vertical: 5),
+                  
                 ),
-                child: Text("Sign up"),
+                child: Text("Zarejestruj się"),
               ),
 
-              SizedBox(width: 10),
+              
             ],
           ),
         ],

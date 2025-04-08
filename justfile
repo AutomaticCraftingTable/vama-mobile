@@ -20,11 +20,12 @@ wsl-connect-adb:
 
 wsl-run-emulator:
     just wsl-connect-adb
+    rm -f nohup.out
     nohup powershell.exe -Command "emulator -avd $EMULATOR_NAME -no-snapshot" &
 
 run-emulator:
-    docker compose up --remove-orphans {{DOCKER_EMULATOR_SERVICE}}
     just stop-emulator
+    docker compose up -d --build  --remove-orphans {{DOCKER_EMULATOR_SERVICE}}
 
 stop-emulator:
     docker compose kill {{DOCKER_EMULATOR_SERVICE}}

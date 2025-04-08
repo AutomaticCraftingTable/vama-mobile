@@ -1,35 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:vama_mobile/theme/app_colors.dart';
 
 class MyTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
-  final bool obscureText;
+  final bool isPassword;
 
   const MyTextField({
     super.key,
     required this.controller,
     required this.hintText,
-    required this.obscureText,
+    required this.isPassword,
   });
 
   @override
-  State<MyTextField> createState() => _MyTextFieldState();
+  State<MyTextField> createState() => TextFieldState();
 }
 
-class _MyTextFieldState extends State<MyTextField> {
+class TextFieldState extends State<MyTextField> {
 
-  late bool _obscure;
+  late bool isPasswordHidden;
 
   @override
   void initState() {
     super.initState();
-    _obscure = widget.obscureText;
+    isPasswordHidden = widget.isPassword;
   }
 
-  // Toggles the visibility of the password
   void _toggleVisibility() {
     setState(() {
-      _obscure = !_obscure;
+      isPasswordHidden = !isPasswordHidden;
     });
   }
 
@@ -39,25 +39,25 @@ class _MyTextFieldState extends State<MyTextField> {
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: TextField(
         controller: widget.controller,
-        obscureText: _obscure,
+        obscureText: isPasswordHidden,
         decoration: InputDecoration(
           enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
+            borderSide: BorderSide(color: AppColors.borderEnabled),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey),
+            borderSide: BorderSide(color: AppColors.borderFocused),
           ),
-          fillColor: Colors.grey.shade200,
+          fillColor: AppColors.inputBackground,
           filled: true,
           hintText: widget.hintText,
-          hintStyle: TextStyle(color: Colors.grey[500]),
+          hintStyle: TextStyle(color: AppColors.inputHit),
 
            // If the field is for a password, show the eye icon
-          suffixIcon: widget.obscureText
+          suffixIcon: widget.isPassword
               ? IconButton(
                   icon: Icon(
-                    _obscure ? Icons.visibility_off : Icons.visibility,
-                    color: Colors.grey,
+                    isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                    color: AppColors.iconColor,
                   ),
                   onPressed: _toggleVisibility,
                 )
