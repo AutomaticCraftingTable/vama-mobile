@@ -27,7 +27,6 @@ class  Myheader  extends StatelessWidget {
 
               SizedBox(width: 5),
 
-              
               ElevatedButton(
                 onPressed: (){
                   Navigator.pushNamed(context, '/signup');

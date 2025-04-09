@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vama_mobile/pages/sign_page.dart';
 import 'pages/login_page.dart';
+import 'routes/app_routes.dart';
+
 
 void main() {
   runApp(const App());
@@ -14,12 +15,7 @@ class App extends StatelessWidget{
     return  MaterialApp(
       debugShowCheckedModeBanner: false,
       home: LoginPage(),
-
-      
-      routes: {
-        '/login':(context)=>LoginPage(),
-        '/signup':(context)=>SignPage(),
-      },
+      onGenerateRoute: AppRoutes.generateRoute,
     );
   }
 }
