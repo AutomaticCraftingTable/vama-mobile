@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vama_mobile/components/log_in_button.dart';
 import 'package:vama_mobile/components/textfield.dart';
 import 'package:vama_mobile/components/header.dart';
+import 'package:vama_mobile/theme/app_colors.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -17,7 +18,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.lightBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -31,7 +32,7 @@ class LoginPage extends StatelessWidget {
               Text(
                 "Witamy w VAMA!",
                 style: TextStyle(
-                  color: Colors.black,
+                  color: AppColors.lightTextBlack,
                   fontSize: 24,
                 ),
               ),
@@ -41,7 +42,7 @@ class LoginPage extends StatelessWidget {
               Text(
                 "Zaloguj się na swoje konto.",
                 style: TextStyle(
-                  color: Colors.black,
+                  color: AppColors.lightTextBlack,
                   fontSize: 18,
                 ),
               ),

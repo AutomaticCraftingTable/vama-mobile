@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vama_mobile/components/sign_up_button.dart';
 import 'package:vama_mobile/components/textfield.dart';
 import 'package:vama_mobile/components/header.dart';
+import 'package:vama_mobile/theme/app_colors.dart';
 
 class SignPage extends StatefulWidget{
   const SignPage ({super.key});
@@ -25,7 +26,7 @@ class _SignPageState extends State<SignPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.lightBackground,
         body: SafeArea(
             child:SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -39,7 +40,7 @@ class _SignPageState extends State<SignPage> {
                     Text(
                       "Witamy w VAMA!",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: AppColors.lightTextBlack,
                         fontSize: 24,
                       ),
                     ),
@@ -47,7 +48,7 @@ class _SignPageState extends State<SignPage> {
                         Text(
                       "Zarejestruj się, proszę.",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: AppColors.lightTextBlack,
                         fontSize: 18,
                       ),
                     ),
@@ -64,7 +65,7 @@ class _SignPageState extends State<SignPage> {
 
                     MyTextField(
                       controller: passwordController,
-                      hintText: 'Hasło',
+                      hintText: 'Hasło', 
                       isPassword: true,
                     ),
 
@@ -74,7 +75,7 @@ class _SignPageState extends State<SignPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Checkbox(
-                          activeColor: Colors.black,
+                          activeColor: AppColors.checkBox,
                           value: _isChecked,
                           onChanged: (bool? value) {
                             setState(() {
@@ -85,7 +86,8 @@ class _SignPageState extends State<SignPage> {
                         Flexible(
                           child: Text(
                             "Zaznaczając, akceptujesz Warunki korzystania.",
-                            style: TextStyle(fontSize: 13),
+                            style: TextStyle(fontSize: 13, color: AppColors.lightTextSecondary),
+                            
                           ),
                         ),
                       ],

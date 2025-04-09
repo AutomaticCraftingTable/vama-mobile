@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vama_mobile/theme/app_colors.dart';
 
 class Mybutton extends StatelessWidget {
 
@@ -14,14 +15,14 @@ class Mybutton extends StatelessWidget {
         padding: const EdgeInsets.all(25),
         margin:  const EdgeInsets.symmetric(horizontal: 25) ,
         decoration: BoxDecoration(
-            color: Colors.blue,
+            color: AppColors.lightPrimary,
                 borderRadius: BorderRadius.circular(8),
         ),
         child: const Center(
           child: Text(
               "Zarejestruj się",
                style: TextStyle(
-                   color: Colors.white,
+                   color: AppColors.lightTextWhite,
                        fontWeight: FontWeight.bold,
                         fontSize: 16,
                ),

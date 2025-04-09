@@ -47,17 +47,17 @@ class TextFieldState extends State<MyTextField> {
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: AppColors.borderFocused),
           ),
-          fillColor: AppColors.inputBackground,
+          fillColor: AppColors.lightSecondary,
           filled: true,
           hintText: widget.hintText,
-          hintStyle: TextStyle(color: AppColors.inputHit),
+          hintStyle: TextStyle(color: AppColors.lightTextSecondary),
 
            // If the field is for a password, show the eye icon
           suffixIcon: widget.isPassword
               ? IconButton(
                   icon: Icon(
                     isPasswordHidden ? Icons.visibility_off : Icons.visibility,
-                    color: AppColors.iconColor,
+                    color: AppColors.lightTextSecondary,
                   ),
                   onPressed: _toggleVisibility,
                 )

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vama_mobile/theme/app_colors.dart';
 
 class  Myheader  extends StatelessWidget {
   const  Myheader ({super.key});
@@ -17,8 +18,8 @@ class  Myheader  extends StatelessWidget {
                   Navigator.pushNamed(context, '/login');
                 },
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  backgroundColor: Colors.grey[300],
+                  foregroundColor:AppColors.lightTextBlack,
+                  backgroundColor: AppColors.buttonGrey,
                   padding: EdgeInsets.symmetric(horizontal: 10 , vertical: 5),
                 ),
                 child: Text("Zaloguj się"),
@@ -32,15 +33,13 @@ class  Myheader  extends StatelessWidget {
                   Navigator.pushNamed(context, '/signup');
                 },
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue,
+                  foregroundColor: AppColors.lightTextWhite,
+                  backgroundColor: AppColors.lightPrimary,
                   padding: EdgeInsets.symmetric(horizontal: 10 , vertical: 5),
                   
                 ),
                 child: Text("Zarejestruj się"),
               ),
-
-              
             ],
           ),
         ],
