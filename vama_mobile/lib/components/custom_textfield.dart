@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:vama_mobile/theme/app_colors.dart';
 
-class MyTextField extends StatefulWidget {
+class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final bool isPassword;
 
-  const MyTextField({
+  const CustomTextField({
     super.key,
     required this.controller,
     required this.hintText,
@@ -14,10 +14,10 @@ class MyTextField extends StatefulWidget {
   });
 
   @override
-  State<MyTextField> createState() => TextFieldState();
+  State<CustomTextField> createState() => TextFieldState();
 }
 
-class TextFieldState extends State<MyTextField> {
+class TextFieldState extends State<CustomTextField> {
 
   late bool isPasswordHidden;
 
@@ -52,7 +52,6 @@ class TextFieldState extends State<MyTextField> {
           hintText: widget.hintText,
           hintStyle: TextStyle(color: AppColors.lightTextSecondary),
 
-           // If the field is for a password, show the eye icon
           suffixIcon: widget.isPassword
               ? IconButton(
                   icon: Icon(

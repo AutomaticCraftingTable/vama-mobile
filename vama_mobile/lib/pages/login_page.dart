@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vama_mobile/components/log_in_button.dart';
-import 'package:vama_mobile/components/textfield.dart';
+import 'package:vama_mobile/components/custom_textfield.dart';
 import 'package:vama_mobile/components/header.dart';
 import 'package:vama_mobile/theme/app_colors.dart';
 
@@ -25,7 +25,7 @@ class LoginPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Myheader(),
+              Header(),
 
               const SizedBox(height: 30),
 
@@ -49,7 +49,7 @@ class LoginPage extends StatelessWidget {
 
               const SizedBox(height: 30),
 
-              MyTextField(
+              CustomTextField(
                 controller: usernameController,
                 hintText: 'Nazwa użytkownika',
                 isPassword: false,
@@ -57,7 +57,7 @@ class LoginPage extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              MyTextField(
+              CustomTextField(
                 controller: passwordController,
                 hintText: 'Hasło',
                 isPassword: true,
@@ -65,7 +65,7 @@ class LoginPage extends StatelessWidget {
 
               const SizedBox(height: 30),
 
-              Mybutton(
+              logInButton(
                 onTap: loginUser,
               ),
 

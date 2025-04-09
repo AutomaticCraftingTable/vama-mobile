@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vama_mobile/theme/app_colors.dart';
 
-class  Myheader  extends StatelessWidget {
-  const  Myheader ({super.key});
+class  Header  extends StatelessWidget {
+  const  Header ({super.key});
 
   @override
   Widget build(BuildContext context) {

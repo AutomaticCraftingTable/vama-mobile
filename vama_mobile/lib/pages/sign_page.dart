@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vama_mobile/components/sign_up_button.dart';
-import 'package:vama_mobile/components/textfield.dart';
+import 'package:vama_mobile/components/custom_textfield.dart';
 import 'package:vama_mobile/components/header.dart';
 import 'package:vama_mobile/theme/app_colors.dart';
 
@@ -33,7 +33,7 @@ class _SignPageState extends State<SignPage> {
                 child:Column(
                   children: [
 
-                    Myheader(),
+                    Header(),
 
                     const SizedBox(height: 30,),
 
@@ -55,7 +55,7 @@ class _SignPageState extends State<SignPage> {
                   
                     const SizedBox(height: 20,),
 
-                    MyTextField(
+                    CustomTextField(
                       controller: usernameController,
                       hintText: 'Nazwa użytkownika',
                       isPassword: false,
@@ -63,7 +63,7 @@ class _SignPageState extends State<SignPage> {
 
                     const SizedBox(height: 20,),
 
-                    MyTextField(
+                    CustomTextField(
                       controller: passwordController,
                       hintText: 'Hasło', 
                       isPassword: true,
@@ -75,7 +75,7 @@ class _SignPageState extends State<SignPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Checkbox(
-                          activeColor: AppColors.checkBox,
+                          activeColor: AppColors.lightPrimary,
                           value: _isChecked,
                           onChanged: (bool? value) {
                             setState(() {
@@ -96,7 +96,7 @@ class _SignPageState extends State<SignPage> {
                     const SizedBox(height: 10,),
 
                     //sign in
-                    Mybutton(
+                    SignUpbutton(
                       onTap: signUser,
                     ),
                   ],
