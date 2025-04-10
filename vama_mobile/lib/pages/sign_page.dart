@@ -19,7 +19,6 @@ class _SignPageState extends State<SignPage> {
     throw UnimplementedError();
   }
 
-  //checkbox
   bool _isChecked = false;
 
   @override
@@ -94,8 +93,7 @@ class _SignPageState extends State<SignPage> {
                     ),
 
                     const SizedBox(height: 10,),
-
-                    //sign in
+                    
                     SignUpbutton(
                       onTap: signUser,
                     ),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:vama_mobile/theme/app_colors.dart';
 
-class logInButton extends StatelessWidget {
+class LogInButton extends StatelessWidget {
 
   final Function()? onTap;
 
-  const logInButton({super.key,required this.onTap});
+  const LogInButton({super.key,required this.onTap});
 
   @override
   Widget build(BuildContext context) {
