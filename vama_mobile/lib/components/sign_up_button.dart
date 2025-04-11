@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:vama_mobile/theme/app_colors.dart';
 
-class Mybutton extends StatelessWidget {
+class SignUpbutton extends StatelessWidget {
 
   final Function()? onTap;
 
-  const Mybutton({super.key,required this.onTap});
+  const SignUpbutton({super.key,required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -14,14 +15,14 @@ class Mybutton extends StatelessWidget {
         padding: const EdgeInsets.all(25),
         margin:  const EdgeInsets.symmetric(horizontal: 25) ,
         decoration: BoxDecoration(
-            color: Colors.blue,
+            color: AppColors.lightPrimary,
                 borderRadius: BorderRadius.circular(8),
         ),
         child: const Center(
           child: Text(
-              "Continue",
+              "Zarejestruj się",
                style: TextStyle(
-                   color: Colors.white,
+                   color: AppColors.lightTextWhite,
                        fontWeight: FontWeight.bold,
                         fontSize: 16,
                ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:vama_mobile/components/my_button.dart';
-import 'package:vama_mobile/components/my_textfield.dart';
-import 'package:vama_mobile/components/my_header.dart';
+import 'package:vama_mobile/components/sign_up_button.dart';
+import 'package:vama_mobile/components/custom_textfield.dart';
+import 'package:vama_mobile/components/header.dart';
+import 'package:vama_mobile/theme/app_colors.dart';
 
 class SignPage extends StatefulWidget{
   const SignPage ({super.key});
@@ -10,75 +11,70 @@ class SignPage extends StatefulWidget{
   State<SignPage> createState() => _SignPageState();
 }
 class _SignPageState extends State<SignPage> {
-  //text editing controllers
+
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  //sign user in method
   void signUser(){
     throw UnimplementedError();
   }
 
-  //checkbox
   bool _isChecked = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        resizeToAvoidBottomInset: true,
+        backgroundColor: AppColors.lightBackground,
         body: SafeArea(
-            child:Center(
+            child:SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child:Column(
                   children: [
 
-                    //Header
-                    Myheader(),
+                    Header(),
 
                     const SizedBox(height: 30,),
 
-                    //Welcome
                     Text(
-                      "Welcome to VAMA!",
+                      "Witamy w VAMA!",
                       style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 32,
-                      ),
-                    ),
-
-                    //Second Text
-                    Text(
-                      "Please sign up.",
-                      style: TextStyle(
-                        color: Colors.black,
+                        color: AppColors.lightTextBlack,
                         fontSize: 24,
                       ),
                     ),
 
+                        Text(
+                      "Zarejestruj się, proszę.",
+                      style: TextStyle(
+                        color: AppColors.lightTextBlack,
+                        fontSize: 18,
+                      ),
+                    ),
+                  
                     const SizedBox(height: 20,),
 
-                    //Username Textfield
-                    MyTextField(
+                    CustomTextField(
                       controller: usernameController,
-                      hintText: 'Username',
-                      obscureText: false,
+                      hintText: 'Nazwa użytkownika',
+                      isPassword: false,
                     ),
 
                     const SizedBox(height: 20,),
 
-                    //Password Textfield
-                    MyTextField(
+                    CustomTextField(
                       controller: passwordController,
-                      hintText: 'Password',
-                      obscureText: true,
+                      hintText: 'Hasło', 
+                      isPassword: true,
                     ),
 
                     const SizedBox(height: 20,),
 
-                    //Checkbox
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Checkbox(
+                          activeColor: AppColors.lightPrimary,
                           value: _isChecked,
                           onChanged: (bool? value) {
                             setState(() {
@@ -88,17 +84,17 @@ class _SignPageState extends State<SignPage> {
                         ),
                         Flexible(
                           child: Text(
-                            "By checking you accept the Terms of condition",
-                            style: TextStyle(fontSize: 16),
+                            "Zaznaczając, akceptujesz Warunki korzystania.",
+                            style: TextStyle(fontSize: 13, color: AppColors.lightTextSecondary),
+                            
                           ),
                         ),
                       ],
                     ),
 
                     const SizedBox(height: 10,),
-
-                    //sign in
-                    Mybutton(
+                    
+                    SignUpbutton(
                       onTap: signUser,
                     ),
                   ],
