@@ -15,16 +15,16 @@ class LogInButton extends StatelessWidget {
         padding: const EdgeInsets.all(25),
         margin:  const EdgeInsets.symmetric(horizontal: 25) ,
         decoration: BoxDecoration(
-            color: AppColors.lightPrimary,
+            color: AppColors.text,
                 borderRadius: BorderRadius.circular(8),
         ),
         child: const Center(
           child: Text(
               "Zaloguj się",
                style: TextStyle(
-                   color: AppColors.lightTextWhite,
-                       fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                   color: AppColors.textWhiteLight,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                ),
           ),
         ),

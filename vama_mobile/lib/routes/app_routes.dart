@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vama_mobile/pages/login_page.dart';
 import 'package:vama_mobile/pages/sign_page.dart';
 import 'package:vama_mobile/routes/page_transitions.dart';
+import 'package:vama_mobile/pages/content_page.dart';
 
 class AppRoutes {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -10,6 +11,8 @@ class AppRoutes {
         return slideFromLeft(LoginPage());
       case '/signup':
         return slideFromRight(SignPage());
+      case '/home':
+        return slideFromRight(ContentPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

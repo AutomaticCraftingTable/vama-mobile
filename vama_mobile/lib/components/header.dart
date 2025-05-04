@@ -1,48 +1,19 @@
+import 'package:provider/provider.dart'; 
 import 'package:flutter/material.dart';
-import 'package:vama_mobile/theme/app_colors.dart';
+import 'package:vama_mobile/components/auth_provider.dart';
+import 'package:vama_mobile/components/guest_header.dart';
+import 'package:vama_mobile/components/user_header.dart';
 
-class  Header  extends StatelessWidget {
-  const  Header ({super.key});
+class Header extends StatelessWidget {
+
+  const Header({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return  Container(
-      padding: EdgeInsets.symmetric(horizontal: 5 , vertical: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Row(
-            children: [
-              ElevatedButton(
-                onPressed: (){
-                  Navigator.pushNamed(context, '/login');
-                },
-                style: TextButton.styleFrom(
-                  foregroundColor:AppColors.lightTextBlack,
-                  backgroundColor: AppColors.buttonGrey,
-                  padding: EdgeInsets.symmetric(horizontal: 10 , vertical: 5),
-                ),
-                child: Text("Zaloguj się"),
-              ),
+    final authProvider = Provider.of<AuthProvider>(context);
 
-              SizedBox(width: 5),
-
-              ElevatedButton(
-                onPressed: (){
-                  Navigator.pushNamed(context, '/signup');
-                },
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.lightTextWhite,
-                  backgroundColor: AppColors.lightPrimary,
-                  padding: EdgeInsets.symmetric(horizontal: 10 , vertical: 5),
-                  
-                ),
-                child: Text("Zarejestruj się"),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+    return authProvider.isLoggedIn
+        ? const UserHeader()
+        : const GuestHeader();
   }
 }

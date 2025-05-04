@@ -15,14 +15,14 @@ class SignUpbutton extends StatelessWidget {
         padding: const EdgeInsets.all(25),
         margin:  const EdgeInsets.symmetric(horizontal: 25) ,
         decoration: BoxDecoration(
-            color: AppColors.lightPrimary,
+            color: AppColors.primary,
                 borderRadius: BorderRadius.circular(8),
         ),
         child: const Center(
           child: Text(
               "Zarejestruj się",
                style: TextStyle(
-                   color: AppColors.lightTextWhite,
+                   color: AppColors.textWhiteLight,
                        fontWeight: FontWeight.bold,
                         fontSize: 16,
                ),

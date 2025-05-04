@@ -47,16 +47,16 @@ class TextFieldState extends State<CustomTextField> {
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: AppColors.borderFocused),
           ),
-          fillColor: AppColors.lightSecondary,
+          fillColor: AppColors.secondary,
           filled: true,
           hintText: widget.hintText,
-          hintStyle: TextStyle(color: AppColors.lightTextSecondary),
+          hintStyle: TextStyle(color: AppColors.textSecondaryLight),
 
           suffixIcon: widget.isPassword
               ? IconButton(
                   icon: Icon(
                     isPasswordHidden ? Icons.visibility_off : Icons.visibility,
-                    color: AppColors.lightTextSecondary,
+                    color: AppColors.textSecondaryLight,
                   ),
                   onPressed: _toggleVisibility,
                 )
