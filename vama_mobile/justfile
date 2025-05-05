@@ -1,7 +1,0 @@
-init:
-    flutter config --no-analytics
-    flutter pub get
-    flutter build apk
-
-create-android-project:
-    flutter create --platforms=android .
