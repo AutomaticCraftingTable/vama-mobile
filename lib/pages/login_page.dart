@@ -18,7 +18,7 @@ class LoginPage extends StatelessWidget {
     final success = await provider.login(usernameController.text, passwordController.text);
 
     if (success) {
-      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Nieprawidłowy login lub hasło")),

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiService {
   static final ApiService _instance = ApiService._internal();
@@ -10,8 +11,9 @@ class ApiService {
 
   ApiService._internal() {
     dio = Dio(BaseOptions(
-      baseUrl: "http://127.0.0.1:3658/m1/904302-886494-default",
+      baseUrl: "http://10.0.2.2:3658/m1/904302-886494-default",
       headers: {"Content-Type": "application/json"},
+      // queryParameters: {"apidogResponseId":"3042793"}
     ));
 
     if (kDebugMode){
