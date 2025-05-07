@@ -1,8 +1,8 @@
 import 'package:provider/provider.dart'; 
 import 'package:flutter/material.dart';
 import 'package:vama_mobile/components/auth_provider.dart';
-import 'package:vama_mobile/components/guest_header.dart';
-import 'package:vama_mobile/components/user_header.dart';
+import 'package:vama_mobile/components/headers/guest_header.dart';
+import 'package:vama_mobile/components/headers/user_header.dart';
 
 class Header extends StatelessWidget {
 

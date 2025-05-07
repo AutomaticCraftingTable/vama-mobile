@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiService {
   static final ApiService _instance = ApiService._internal();
@@ -13,10 +12,9 @@ class ApiService {
     dio = Dio(BaseOptions(
       baseUrl: "http://10.0.2.2:3658/m1/904302-886494-default",
       headers: {"Content-Type": "application/json"},
-      // queryParameters: {"apidogResponseId":"3042793"}
     ));
 
-    if (kDebugMode){
+    if (kDebugMode) {
       dio.interceptors.add(InterceptorsWrapper(
         onRequest: (options, handler) {
           print("REQUEST ${options.method} ${options.uri}");
@@ -33,6 +31,21 @@ class ApiService {
           print("> DATA: ${error.response?.data}");
           return handler.next(error);
         },
-      ));}
+      ));
+    }
+  }
+
+  Future<List<dynamic>> fetchPosts() async {
+    try {
+      final response = await dio.get('/api/home');
+      if (response.statusCode == 200) {
+        return response.data['articles'];
+      } else {
+        throw Exception("Failed to load posts");
+      }
+    } catch (e) {
+      print("Error: $e");
+      rethrow;
+    }
   }
 }

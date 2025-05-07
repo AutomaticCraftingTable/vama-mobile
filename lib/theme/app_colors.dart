@@ -6,7 +6,7 @@ class AppColors {
   static const Color checkBox = Colors.black;
   
   static const Color primary = Color (0xFF000000);
-  static const Color primaryhover = Color (0xFF191919);
+  static const Color primaryHover = Color (0xFF191919);
   static const Color secondary = Color(0xFFF1F1F1);
   static const Color secondaryHover = Color (0xFFE9E9E9);
   static const Color bg = Color (0xFFFFFFFF);

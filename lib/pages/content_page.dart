@@ -1,41 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:vama_mobile/api/api_service.dart';
+import 'package:vama_mobile/components/headers/header.dart';
 import 'package:vama_mobile/components/post_card.dart';
-import 'package:vama_mobile/components/mock_posts.dart';
-import 'package:vama_mobile/components/header.dart';
+
 
 class ContentPage extends StatelessWidget {
   const ContentPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return   Scaffold(
-
-       body: SafeArea(
+    return Scaffold(
+      body: SafeArea(
         child: Column(
           children: [
-
             const Header(),
-
             const SizedBox(height: 10),
-            
             Expanded(
-              child: ListView.builder(
-                itemCount: posts.length,
-                itemBuilder: (context, index) {
-                  final post = posts[index];
-                  return PostCard(
-                    username: post['username'],
-                    imageUrl: post['imageUrl'],
-                    tags: List<String>.from(post['tags']),
-                    title: post['title'],
-                    followers: post['followers'],
+              child: FutureBuilder<List<dynamic>>(
+                future: ApiService().fetchPosts(), 
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No posts available'));
+                  }
+
+                  final posts = snapshot.data!;
+
+                  return ListView.builder(
+                    itemCount: posts.length,
+                    itemBuilder: (context, index) {
+                      final post = posts[index];
+                      return PostCard(
+                        author: post['author'],
+                        thumbnail: post['thumbnail'],
+                        tags: List<String>.from(post['tags'].split(',')),
+                        title: post['title'],
+                        followers: post['followers'],
+                      );
+                    },
                   );
                 },
               ),
             ),
           ],
         ),
-       ),
+      ),
     );
   }
 }

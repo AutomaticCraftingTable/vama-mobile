@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:vama_mobile/theme/app_colors.dart';
 
 class PostCard extends StatelessWidget {
-  final String username;
-  final String imageUrl;
+  final String author;
+  final String thumbnail;
   final List<String> tags;
   final String title; 
   final int followers;
 
   const PostCard({
     super.key,
-    required this.username,
-    required this.imageUrl,
+    required this.author,
+    required this.thumbnail,
     required this.tags,
     required this.title, 
     required this.followers,
@@ -19,6 +19,8 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+      
+
     void goToUserProfile() {
       print('User profile tapped!');
     }
@@ -38,6 +40,7 @@ class PostCard extends StatelessWidget {
             children: [
               Row(
                 children: [
+                  
 
                   GestureDetector(
                     onTap: goToUserProfile,
@@ -54,7 +57,7 @@ class PostCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(username, style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text(author, style: const TextStyle(fontWeight: FontWeight.bold)),
                         Text("$followers followers", style: const TextStyle(fontSize: 12)),
                       ],
                     ),
@@ -74,7 +77,7 @@ class PostCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.network(
-                  imageUrl,
+                  thumbnail,
                   height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,

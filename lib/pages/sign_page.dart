@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:vama_mobile/components/sign_up_button.dart';
+import 'package:vama_mobile/components/buttons/sign_up_button.dart';
 import 'package:vama_mobile/components/custom_textfield.dart';
 import 'package:vama_mobile/theme/app_colors.dart';
 import 'package:vama_mobile/components/auth_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:vama_mobile/components/header.dart';
+import 'package:vama_mobile/components/headers/header.dart';
 
 class SignPage extends StatefulWidget {
   const SignPage({super.key});

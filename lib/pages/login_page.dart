@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:vama_mobile/components/header.dart';
-import 'package:vama_mobile/components/log_in_button.dart';
+import 'package:vama_mobile/components/headers/header.dart';
+import 'package:vama_mobile/components/buttons/log_in_button.dart';
 import 'package:vama_mobile/components/custom_textfield.dart';
 import 'package:vama_mobile/theme/app_colors.dart';
 import 'package:vama_mobile/components/auth_provider.dart';

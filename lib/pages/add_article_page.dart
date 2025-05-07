@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vama_mobile/components/header.dart';
+import 'package:vama_mobile/components/headers/header.dart';
 
 class AddArticle extends StatelessWidget {
   const AddArticle({super.key});
