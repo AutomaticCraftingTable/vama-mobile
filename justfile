@@ -21,7 +21,7 @@ wsl-connect-adb:
 wsl-run-emulator:
     just wsl-connect-adb
     rm -f nohup.out
-    nohup powershell.exe -Command "emulator -avd $EMULATOR_NAME -no-snapshot" &
+    nohup powershell.exe -Command "emulator -avd $EMULATOR_NAME" &
 
 run-emulator:
     just stop-emulator

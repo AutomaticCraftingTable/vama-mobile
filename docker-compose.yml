@@ -20,6 +20,7 @@ services:
         container_name: vama-mobile-emulator-dev
         build: ./environment/emulator
         ports:
+            - 3658:7777
             - 6080:6080
             - 5555:5555
         devices:
