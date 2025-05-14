@@ -17,7 +17,9 @@ class ContentPage extends StatelessWidget {
             const SizedBox(height: 10),
             Expanded(
               child: FutureBuilder<List<dynamic>>(
+
                 future: ApiService().fetchPosts(), 
+                
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -38,11 +40,16 @@ class ContentPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final post = posts[index];
                       return PostCard(
-                        author: post['author'],
+                        logo: post['author']['logo'],
+                        likes: post['likes'],
+                        comments: post['comments'],
+                        content: post['content'],
+                        id: post['id'],
+                        author: post['author']['nickname'],
                         thumbnail: post['thumbnail'],
-                        tags: List<String>.from(post['tags'].split(',')),
+                        tags: List<String>.from(post['tags'].split('#')),
                         title: post['title'],
-                        followers: post['followers'],
+                        followers: post['author']['followers'],
                       );
                     },
                   );
