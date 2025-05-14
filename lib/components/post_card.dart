@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vama_mobile/theme/app_colors.dart';
+import 'package:vama_mobile/pages/article_detail_page.dart';
 
 class PostCard extends StatelessWidget {
   final String author;
@@ -7,9 +8,19 @@ class PostCard extends StatelessWidget {
   final List<String> tags;
   final String title; 
   final int followers;
+  final int id;
+  final String content;
+  final int likes;
+  final List<dynamic> comments;
+  final String logo;
 
   const PostCard({
     super.key,
+    required this.logo,
+    required this.likes,
+    required this.comments,
+    required this.content,
+    required this.id,
     required this.author,
     required this.thumbnail,
     required this.tags,
@@ -27,7 +38,26 @@ class PostCard extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        print('Entire post card tapped!');
+         Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => ArticleDetailPage(
+        articleId: id,
+        initialArticleData: {
+          'id': id,
+          'author': author,
+          'thumbnail': thumbnail,
+          'tags': tags,
+          'title': title,
+          'followers': followers,
+          'content': content,
+          'likes': likes,
+          'comments': comments,
+          'logo': logo,
+        },
+      ),
+    ),
+  );
       },
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -44,9 +74,9 @@ class PostCard extends StatelessWidget {
 
                   GestureDetector(
                     onTap: goToUserProfile,
-                    child: const CircleAvatar(
-                      backgroundColor: AppColors.primary,
-                      child: Icon(Icons.person, color: AppColors.bg),
+                    child:  CircleAvatar(
+                      backgroundImage: NetworkImage(logo),
+                      radius: 24,
                     ),
                   ),
 

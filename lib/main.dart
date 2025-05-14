@@ -5,8 +5,8 @@ import 'package:vama_mobile/pages/content_page.dart';
 import 'package:vama_mobile/routes/app_routes.dart';
 import 'package:vama_mobile/components/auth_provider.dart';
 
-
 void main() {
+
   runApp(
     MultiProvider(
       providers: [

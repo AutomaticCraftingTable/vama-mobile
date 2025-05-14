@@ -7,6 +7,7 @@ class AuthProvider with ChangeNotifier {
   String? _registeredPassword;
 
   bool get isLoggedIn => _isLoggedIn;
+  
 
   Future<bool> register(String username, String password) async {
     try {
