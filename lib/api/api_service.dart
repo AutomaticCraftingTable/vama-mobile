@@ -122,14 +122,80 @@ Future<void> addCommentToArticle(int articleId, String content) async {
     throw Exception('Failed to add comment');
   }
 }
-Future<Response> subscribeToArticle(int articleId) async {
+Future<Response> subscribeToProfil(int nickmame) async {
   try {
     final response = await dio.post(
-      '/api/profile/$articleId/subscribe',
+      '/api/profile/$nickmame/subscribe',
     );
     return response;
   } catch (e) {
     throw Exception('Failed to subscribe: $e');
     }
   }
+
+  Future<Response> unsubscribeFromProfile(int nickmame) async {
+  try {
+    final response = await dio.delete(
+      '/api/profile/$nickmame/subscribe',
+    );
+    return response;
+  } catch (e) {
+    throw Exception('Failed to unsubscribe: $e');
+    }
+  }
+
+  Future<void> reportComment(int articleId, String message) async {
+  try {
+    final response = await dio.post(
+      '/api/article/$articleId/report',
+      data: {
+        'message': message,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print("Comment reported successfully");
+    } else {
+      throw Exception("Failed to report comment");
+    }
+  } catch (e) {
+    print("Error reporting comment: $e");
+    rethrow;
+  }
+}
+Future<List<dynamic>> fetchFavoriteArticles() async {
+  try {
+    final response = await dio.get('/api/home/liked');
+
+    if (response.statusCode == 200) {
+      return response.data['articles']; 
+    } else {
+      throw Exception('Failed to load favorite articles');
+    }
+  } catch (e) {
+    print("Error fetching favorite articles: $e");
+    rethrow;
+  }
+}
+Future<List<dynamic>> fetchSubscriptions() async {
+  try {
+    final response = await dio.get('/api/home/subscriptions');
+
+    if (response.statusCode == 200) {
+      return response.data['subscriptions'];
+    } else {
+      throw Exception('Failed to load subscriptions');
+    }
+  } catch (e) {
+    print("Error fetching subscriptions: $e");
+    rethrow;
+  }
+}
+Future<void> deleteComment(int commentId) async {
+  final response = await dio.delete('/api/comment/$commentId');
+  if (response.statusCode != 200) {
+    throw Exception('Failed to unlike comment');
+  }
+}
+
 }

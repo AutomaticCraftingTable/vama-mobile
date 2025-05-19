@@ -5,7 +5,7 @@ import 'package:vama_mobile/components/buttons/custom_buttons.dart';
 import 'package:vama_mobile/components/auth_provider.dart';
 import 'package:vama_mobile/theme/app_colors.dart';
 
-class ArticleAuthorCard extends StatelessWidget {
+class ArticleAuthorCard extends StatefulWidget {
   final Map<String, dynamic> article;
   final int articleId;
   final VoidCallback onTapProfile;
@@ -18,14 +18,64 @@ class ArticleAuthorCard extends StatelessWidget {
   });
 
   @override
+  State<ArticleAuthorCard> createState() => _ArticleAuthorCardState();
+}
+
+class _ArticleAuthorCardState extends State<ArticleAuthorCard> {
+  bool isSubscribed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isSubscribed = widget.article['isSubscribed'] ?? false;
+  }
+
+  Future<void> toggleSubscription() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    if (!authProvider.isLoggedIn) {
+      Navigator.pushNamed(context, '/login');
+      return;
+    }
+
+    try {
+      if (isSubscribed) {
+        final response = await ApiService().unsubscribeFromProfile(widget.articleId);
+        if (response.statusCode == 200) {
+          setState(() => isSubscribed = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Odsubskrybowano!')),
+          );
+        } else {
+          throw Exception('Failed to unsubscribe');
+        }
+      } else {
+        final response = await ApiService().subscribeToProfil(widget.articleId);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          setState(() => isSubscribed = true);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Zasubskrybowano!')),
+          );
+        } else {
+          throw Exception('Failed to subscribe');
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(isSubscribed ? 'Błąd przy odsubskrypcji' : 'Błąd przy subskrypcji')),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         GestureDetector(
-          onTap: onTapProfile,
+          onTap: widget.onTapProfile,
           child: CircleAvatar(
-            backgroundImage: NetworkImage(article['logo']),
+            backgroundImage: NetworkImage(widget.article['logo']),
             radius: 24,
           ),
         ),
@@ -35,15 +85,16 @@ class ArticleAuthorCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                article['author'],
+                widget.article['author'],
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
-                  color: AppColors.text
+                  color: AppColors.text,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
-              Text("${article['followers']} followers",
+              Text(
+                "${widget.article['followers']} followers",
                 style: const TextStyle(
                   fontSize: 12,
                   color: AppColors.textDimmed,
@@ -56,37 +107,13 @@ class ArticleAuthorCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SecondaryButton(
-              onPressed: () async {
-                final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
-                if (!authProvider.isLoggedIn) {
-                  Navigator.pushNamed(context, '/login');
-                  return;
-                }
-
-                try {
-                  final response = await ApiService().subscribeToArticle(articleId);
-
-                  if (response.statusCode == 200 || response.statusCode == 201) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Zasubskrybowano!')),
-                    );
-                  } else {
-                    throw Exception('Failed to subscribe');
-                  }
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Błąd przy subskrypcji')),
-                  );
-                }
-                print("Zasubskrybowano");
-              },
-              child: const Text(
-                "Zasubskrybuj",
-                style: TextStyle(
+              onPressed: toggleSubscription,
+              child: Text(
+                isSubscribed ? "Odsubskrybuj" : "Zasubskrybuj",
+                style: const TextStyle(
                   fontSize: 12,
                   color: AppColors.text,
-                  ),
+                ),
               ),
             ),
             const SizedBox(width: 4),
@@ -96,7 +123,7 @@ class ArticleAuthorCard extends StatelessWidget {
                 if (value == 'report') {
                   try {
                     await ApiService().reportArticle(
-                      articleId,
+                      widget.articleId,
                       'Zgłoszenie artykułu',
                     );
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -122,3 +149,4 @@ class ArticleAuthorCard extends StatelessWidget {
     );
   }
 }
+

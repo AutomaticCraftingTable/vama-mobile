@@ -7,6 +7,9 @@ class CommentItem extends StatelessWidget {
   final bool isLiked;
   final VoidCallback onLike;
   final VoidCallback onTapProfile;
+  final VoidCallback? onReport;
+  final VoidCallback? onDelete;
+  final String currentUsername;
 
   const CommentItem({
     super.key,
@@ -14,6 +17,9 @@ class CommentItem extends StatelessWidget {
     required this.isLiked,
     required this.onLike,
     required this.onTapProfile,
+    required this.currentUsername,
+    this.onReport,
+    this.onDelete,
   });
 
   @override
@@ -21,6 +27,7 @@ class CommentItem extends StatelessWidget {
     final DateTime createdAt = DateTime.parse(comment['created_at']);
     final String timeAgo = timeago.format(createdAt);
     final int likes = comment['likes'] ?? 0;
+    final bool isOwnComment = comment['nickname'] == currentUsername;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
@@ -39,12 +46,40 @@ class CommentItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  comment['causer'],
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      comment['causer'],
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    PopupMenuButton<int>(
+                      icon: const Icon(Icons.more_vert, size: 20),
+                      onSelected: (value) {
+                        if (value == 1 && onReport != null) {
+                          onReport!();
+                        } else if (value == 2 && onDelete != null) {
+                          onDelete!();
+                        }
+                      },
+                      itemBuilder: (context) => isOwnComment
+                          ? [
+                              const PopupMenuItem<int>(
+                                value: 2,
+                                child: Text("Usuń komentarz"),
+                              ),
+                            ]
+                          : [
+                              const PopupMenuItem<int>(
+                                value: 1,
+                                child: Text("Zgłoś komentarz"),
+                              ),
+                            ],
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -52,8 +87,7 @@ class CommentItem extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.text,
-                    ),
-                  
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Row(
@@ -69,7 +103,8 @@ class CommentItem extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text(
                       "$likes",
-                      style: const TextStyle(fontSize: 12,
+                      style: const TextStyle(
+                        fontSize: 12,
                         color: AppColors.textSecondary,
                       ),
                     ),

@@ -15,17 +15,29 @@ class LoginPage extends StatelessWidget {
   void loginUser(BuildContext context) async {
     final provider = Provider.of<AuthProvider>(context, listen: false);
 
-    final success = await provider.login(usernameController.text, passwordController.text);
-
-    if (success) {
-      Navigator.pop(context);
-    } else {
+    if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Nieprawidłowy login lub hasło")),
+        SnackBar(content: Text("Wszystkie pola muszą być wypełnione")),
+      );
+      return;
+    }
+
+    try {
+      final success = await provider.login(usernameController.text, passwordController.text);
+
+      if (success) {
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Nieprawidłowy login lub hasło")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Błąd podczas logowania: ${e.toString()}")),
       );
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

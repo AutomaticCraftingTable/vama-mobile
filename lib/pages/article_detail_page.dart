@@ -85,7 +85,6 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
 
     final comments = article?['comments'] as List<dynamic>;
     final comment = comments.firstWhere((c) => c['id'] == commentId);
-
     final alreadyLiked = likedComments.contains(commentId);
 
     setState(() {
@@ -138,14 +137,12 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
       isWritingComment = false;
       commentController.clear();
     });
-
     try {
       await ApiService().addCommentToArticle(articleId, text);
-
       setState(() {
         final newComment = {
           'id': DateTime.now().millisecondsSinceEpoch,
-          'causer': 'You',
+           'causer': authProvider.nickname ?? 'Unknown',
           'content': text,
           'logo': 'https://example.com/your_avatar.png',
           'created_at': DateTime.now().toIso8601String(),
@@ -159,14 +156,41 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
       );
     }
   }
-
   void goToUserProfile() {
     print('User profile tapped!');
   }
+  void reportComment(int commentId) async {
+  try {
+    await ApiService().reportComment(commentId, 'Komentarz jest nieodpowiedni'); 
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Komentarz został zgłoszony')),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Błąd przy zgłaszaniu komentarza')),
+    );
+  }
+}
+void deleteComment(int commentId) async {
+  try {
+    await ApiService().deleteComment(commentId);
+    setState(() {
+      article?['comments'].removeWhere((c) => c['id'] == commentId);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Komentarz został usunięty')),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Błąd przy usuwaniu komentarza')),
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: true);
+    final currentUsername = authProvider.nickname ?? 'Unknown';
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -227,7 +251,6 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                             ),
                         ),
                         const SizedBox(height: 10),
-
                         ...article!['comments'].map<Widget>((comment) {
                           final int commentId = comment['id'];
                           return CommentItem(
@@ -235,9 +258,11 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                             isLiked: likedComments.contains(commentId),
                             onLike: () => toggleCommentLike(commentId),
                             onTapProfile: goToUserProfile,
+                            currentUsername: currentUsername,
+                            onReport: () => reportComment(commentId),
+                            onDelete: () => deleteComment(commentId),
                           );
                         }).toList(),
-
                       ],
                     ),
                   );
@@ -248,11 +273,13 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
         ),
       ),
       floatingActionButton: isWritingComment
-    ? Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Row(
-          children: [
-            Expanded(
+  ? Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: TextField(
                 controller: commentController,
                 decoration: InputDecoration(
@@ -276,27 +303,27 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
                 ),
               ),
             ),
-            const SizedBox(width: 8),
-            FloatingActionButton(
-              onPressed: addComment,
-              child: Icon(Icons.send, color: Colors.white),
-              mini: true,
-              backgroundColor: AppColors.primary,
-            ),
-          ],
-        ),
-      )
-    : ArticleActionBar(
-        isLiked: isLiked,
-        likeCount: article?['likes'] ?? 0,
-        onLike: toggleLike,
-        onComment: () {
-          setState(() {
-            isWritingComment = true;
-          });
-        },
+          ),
+          const SizedBox(width: 8),
+          FloatingActionButton(
+            onPressed: addComment,
+            child: Icon(Icons.send, color: Colors.white),
+            mini: true,
+            backgroundColor: AppColors.primary,
+          ),
+        ],
       ),
-
+    )
+  : ArticleActionBar(
+      isLiked: isLiked,
+      likeCount: article?['likes'] ?? 0,
+      onLike: toggleLike,
+      onComment: () {
+        setState(() {
+          isWritingComment = true;
+        });
+      },
+    ),
     );
   }
 }

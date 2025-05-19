@@ -3,22 +3,25 @@ import 'package:vama_mobile/api/api_service.dart';
 
 class AuthProvider with ChangeNotifier {
   bool _isLoggedIn = false;
-  String? _registeredUsername;
+  String? _registeredNickname;
   String? _registeredPassword;
 
+  String? _nickname;
+
+  String? get nickname => _nickname;
   bool get isLoggedIn => _isLoggedIn;
   
 
-  Future<bool> register(String username, String password) async {
+  Future<bool> register(String nickname, String password) async {
     try {
       final api = ApiService();
 
       final response = await api.dio.post('/api/auth/register', data: {
-        'username': username,
+        'nickname': nickname,
         'password': password,
       });
       if (response.statusCode == 200) {
-        _registeredUsername = username; 
+        _registeredNickname = nickname; 
         _registeredPassword = password;
         notifyListeners();
         return true;
@@ -31,12 +34,12 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> login(String username, String password) async {
+  Future<bool> login(String nickname, String password) async {
   try {
     final api = ApiService();
 
     final response = await api.dio.post('/api/auth/login', data: {
-      'username': username,
+      'nickname': nickname,
       'password': password,
     });
 
