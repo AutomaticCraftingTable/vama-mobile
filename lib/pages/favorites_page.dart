@@ -1,30 +1,165 @@
 import 'package:flutter/material.dart';
+import 'package:vama_mobile/api/api_service.dart';
 import 'package:vama_mobile/components/headers/header.dart';
-
-class FavoritesPage extends StatelessWidget {
+import 'package:vama_mobile/theme/app_colors.dart';
+import 'package:vama_mobile/pages/article_detail_page.dart';
+class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return   Scaffold(
-        body:
-          SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Header(),
+  State<FavoritesPage> createState() => _FavoritesPageState();
+}
 
-              Text(
-                'Polubione',
-              ),
-              const SizedBox(height: 30),
-              
-            ],
-          ),
+class _FavoritesPageState extends State<FavoritesPage> {
+  List<dynamic> _articles = [];
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFavorites();
+  }
+
+  Future<void> _loadFavorites() async {
+    try {
+      final data = await ApiService().fetchFavoriteArticles();
+      setState(() {
+        _articles = data;
+        _isLoading = false;
+        _error = null;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _removeFromFavorites(int articleId) async {
+    try {
+      await ApiService().unlikeComment(articleId);
+      setState(() {
+        _articles.removeWhere((article) => article['id'] == articleId);
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Błąd podczas usuwania: $e')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            const Header(),
+            const SizedBox(height: 5),
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _error != null
+                      ? Center(child: Text('Błąd: $_error'))
+                      : _articles.isEmpty
+                          ? const Center(child: Text('Brak ulubionych artykułów.'))
+                          : ListView.builder(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              itemCount: _articles.length,
+                              itemBuilder: (context, index) {
+                                final article = _articles[index];
+
+                                bool isValidUrl(String? url) {
+                                  return url != null &&
+                                      (url.startsWith('http://') || url.startsWith('https://'));
+                                }
+
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => ArticleDetailPage(
+                                          articleId: article['id'],
+                                          initialArticleData: {
+                                            'id': article['id'],
+                                            'author': article['author']['nickname'],
+                                            'thumbnail': article['thumbnail'],
+                                            'tags': article['tags'],
+                                            'title': article['title'],
+                                            'followers': article['author']['followers'],
+                                            'content': article['content'],
+                                            'likes': article['likes'],
+                                            'comments': article['comments'],
+                                            'logo': article['author']['logo'],
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Card(
+                                    margin: const EdgeInsets.symmetric(vertical: 8),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    elevation: 4,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12),
+                                      child: Row(
+                                        children: [
+                                          isValidUrl(article['thumbnail'])
+                                              ? ClipRRect(
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  child: Image.network(
+                                                    article['thumbnail'],
+                                                    width: 80,
+                                                    height: 80,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                )
+                                              : Container(
+                                                  width: 80,
+                                                  height: 80,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.grey[300],
+                                                    borderRadius: BorderRadius.circular(8),
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.image,
+                                                    size: 40,
+                                                    color: AppColors.textDimmed,
+                                                  ),
+                                                ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Text(
+                                              article['title'] ?? '',
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.text,
+                                              ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.close, color: AppColors.textDimmed),
+                                            onPressed: () => _removeFromFavorites(article['id']),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+            ),
+          ],
         ),
-          ),
+      ),
     );
   }
 }
