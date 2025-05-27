@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:vama_mobile/theme/app_colors.dart';
+import 'package:vama_mobile/theme/light_theme.dart';
 
 
 class CustomBottomNavBar extends StatelessWidget {
@@ -18,8 +18,8 @@ class CustomBottomNavBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
-      selectedItemColor: AppColors.text, 
-      unselectedItemColor: AppColors.textSecondary, 
+      selectedItemColor: LightTheme.text, 
+      unselectedItemColor: LightTheme.textSecondary, 
       items: const [
         BottomNavigationBarItem(
           icon: Icon(LucideIcons.home),

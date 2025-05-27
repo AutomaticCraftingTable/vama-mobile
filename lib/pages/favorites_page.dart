@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vama_mobile/api/api_service.dart';
 import 'package:vama_mobile/components/headers/header.dart';
-import 'package:vama_mobile/theme/app_colors.dart';
+import 'package:vama_mobile/theme/light_theme.dart';
 import 'package:vama_mobile/pages/article_detail_page.dart';
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
@@ -57,7 +57,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
         child: Column(
           children: [
             const Header(),
-            const SizedBox(height: 5),
             Expanded(
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
@@ -83,18 +82,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                       MaterialPageRoute(
                                         builder: (_) => ArticleDetailPage(
                                           articleId: article['id'],
-                                          initialArticleData: {
-                                            'id': article['id'],
-                                            'author': article['author']['nickname'],
-                                            'thumbnail': article['thumbnail'],
-                                            'tags': article['tags'],
-                                            'title': article['title'],
-                                            'followers': article['author']['followers'],
-                                            'content': article['content'],
-                                            'likes': article['likes'],
-                                            'comments': article['comments'],
-                                            'logo': article['author']['logo'],
-                                          },
                                         ),
                                       ),
                                     );
@@ -129,7 +116,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                                   child: const Icon(
                                                     Icons.image,
                                                     size: 40,
-                                                    color: AppColors.textDimmed,
+                                                    color: LightTheme.textDimmed,
                                                   ),
                                                 ),
                                           const SizedBox(width: 12),
@@ -139,14 +126,14 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                               style: const TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w600,
-                                                color: AppColors.text,
+                                                color: LightTheme.text,
                                               ),
                                               maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
                                           IconButton(
-                                            icon: const Icon(Icons.close, color: AppColors.textDimmed),
+                                            icon: const Icon(Icons.close, color: LightTheme.textDimmed),
                                             onPressed: () => _removeFromFavorites(article['id']),
                                           ),
                                         ],

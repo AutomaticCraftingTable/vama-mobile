@@ -14,7 +14,6 @@ class ContentPage extends StatelessWidget {
         child: Column(
           children: [
             const Header(),
-            const SizedBox(height: 10),
             Expanded(
               child: FutureBuilder<List<dynamic>>(
 
@@ -40,6 +39,7 @@ class ContentPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final post = posts[index];
                       return PostCard(
+                        accountId: post['author']['account_id'],
                         logo: post['author']['logo'],
                         likes: post['likes'],
                         comments: post['comments'],
@@ -50,6 +50,7 @@ class ContentPage extends StatelessWidget {
                         tags: List<String>.from(post['tags'].split('#')),
                         title: post['title'],
                         followers: post['author']['followers'],
+                        
                       );
                     },
                   );

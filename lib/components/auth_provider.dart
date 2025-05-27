@@ -8,6 +8,9 @@ class AuthProvider with ChangeNotifier {
 
   String? _nickname;
 
+  int? _Id;
+  int? get Id => _Id;
+
   String? get nickname => _nickname;
   bool get isLoggedIn => _isLoggedIn;
   
@@ -39,24 +42,31 @@ class AuthProvider with ChangeNotifier {
     final api = ApiService();
 
     final response = await api.dio.post('/api/auth/login', data: {
-      'nickname': nickname,
+      'email': nickname,
       'password': password,
     });
 
     if (response.statusCode == 200) {
       _isLoggedIn = true;
-      print("Login successful");
-      notifyListeners(); 
+      _nickname = nickname;
+
+      final idValue = response.data['user']['id'];
+      print("ID value: $idValue");
+      _Id = idValue is int ? idValue : int.parse(idValue);
+
+      print("Login successful, accountId: $_Id");
+      notifyListeners();
       return true;
     } else {
       print("Login failed");
-      return false; 
+      return false;
     }
   } catch (e) {
-    print("Error $e");
-    return false;  
+    print("Error during login: $e");
+    return false;
   }
 }
+
 
   void logOut() async {
   try {

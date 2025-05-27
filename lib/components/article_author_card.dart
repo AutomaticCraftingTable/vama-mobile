@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:vama_mobile/api/api_service.dart';
 import 'package:vama_mobile/components/buttons/custom_buttons.dart';
 import 'package:vama_mobile/components/auth_provider.dart';
-import 'package:vama_mobile/theme/app_colors.dart';
+import 'package:vama_mobile/theme/light_theme.dart';
 
 class ArticleAuthorCard extends StatefulWidget {
-  final Map<String, dynamic> article;
+  final Map<String?, dynamic> article;
   final int articleId;
   final VoidCallback onTapProfile;
 
@@ -75,8 +75,11 @@ class _ArticleAuthorCardState extends State<ArticleAuthorCard> {
         GestureDetector(
           onTap: widget.onTapProfile,
           child: CircleAvatar(
-            backgroundImage: NetworkImage(widget.article['logo']),
-            radius: 24,
+            backgroundImage: NetworkImage(widget.article['author']['logo'] ?? ''),
+            radius: 20,
+            child: widget.article['author']['logo'] == null
+                ? const Icon(Icons.person)
+                : null,
           ),
         ),
         const SizedBox(width: 8),
@@ -85,19 +88,19 @@ class _ArticleAuthorCardState extends State<ArticleAuthorCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.article['author'],
+                widget.article['author']['nickname'] ?? 'Unknown Author',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: AppColors.text,
+                  fontSize: 14,
+                  color: LightTheme.text,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
                 "${widget.article['followers']} followers",
                 style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textDimmed,
+                  fontSize: 10,
+                  color: LightTheme.textDimmed,
                 ),
               ),
             ],
@@ -111,8 +114,8 @@ class _ArticleAuthorCardState extends State<ArticleAuthorCard> {
               child: Text(
                 isSubscribed ? "Odsubskrybuj" : "Zasubskrybuj",
                 style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.text,
+                  fontSize: 11,
+                  color: LightTheme.text,
                 ),
               ),
             ),

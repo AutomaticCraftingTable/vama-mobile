@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vama_mobile/theme/app_colors.dart';
+import 'package:vama_mobile/theme/light_theme.dart';
 import 'package:vama_mobile/pages/article_detail_page.dart';
 
 class PostCard extends StatelessWidget {
@@ -13,6 +13,7 @@ class PostCard extends StatelessWidget {
   final int likes;
   final List<dynamic> comments;
   final String logo;
+  final int accountId;
 
   const PostCard({
     super.key,
@@ -26,6 +27,7 @@ class PostCard extends StatelessWidget {
     required this.tags,
     required this.title, 
     required this.followers,
+    required this.accountId,
   });
 
   @override
@@ -33,7 +35,11 @@ class PostCard extends StatelessWidget {
       
 
     void goToUserProfile() {
-      print('User profile tapped!');
+      Navigator.pushNamed(
+      context,
+      '/profile',
+      arguments: accountId,
+    );
     }
 
     return InkWell(
@@ -43,6 +49,7 @@ class PostCard extends StatelessWidget {
     MaterialPageRoute(
       builder: (_) => ArticleDetailPage(
         articleId: id,
+        
         initialArticleData: {
           'id': id,
           'author': author,
@@ -120,8 +127,8 @@ class PostCard extends StatelessWidget {
                 spacing: 6,
                 children: tags.map((tag) {
                   return Chip(
-                    label: Text(tag, style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.text)),
-                    backgroundColor: AppColors.secondary,
+                    label: Text(tag, style: const TextStyle(fontWeight: FontWeight.bold, color: LightTheme.text)),
+                    backgroundColor: LightTheme.secondary,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   );
                 }).toList(),

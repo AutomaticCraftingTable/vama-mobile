@@ -12,8 +12,6 @@ class Subscriptions extends StatelessWidget {
         child: Column(
           children: [
             const Header(),
-            const SizedBox(height: 10),
-            
             Expanded(
               child: FutureBuilder<List<dynamic>>(
                 future: ApiService().fetchSubscriptions(),

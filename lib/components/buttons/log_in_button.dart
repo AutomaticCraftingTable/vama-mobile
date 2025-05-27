@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vama_mobile/theme/app_colors.dart';
+import 'package:vama_mobile/theme/light_theme.dart';
 
 class LogInButton extends StatelessWidget {
 
@@ -15,14 +15,14 @@ class LogInButton extends StatelessWidget {
         padding: const EdgeInsets.all(25),
         margin:  const EdgeInsets.symmetric(horizontal: 25) ,
         decoration: BoxDecoration(
-            color: AppColors.text,
+            color: LightTheme.text,
                 borderRadius: BorderRadius.circular(8),
         ),
         child: const Center(
           child: Text(
               "Zaloguj się",
                style: TextStyle(
-                   color: AppColors.textWhiteLight,
+                   color: LightTheme.textWhiteLight,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                ),

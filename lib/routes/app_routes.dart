@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vama_mobile/components/auth_provider.dart';
 import 'package:vama_mobile/pages/login_page.dart';
+import 'package:vama_mobile/pages/settings_page.dart';
 import 'package:vama_mobile/pages/sign_page.dart';
+import 'package:vama_mobile/pages/user_profile_page.dart';
 import 'package:vama_mobile/routes/page_transitions.dart';
 import 'package:vama_mobile/pages/content_page.dart';
 import 'package:vama_mobile/pages/favorites_page.dart';
@@ -22,6 +26,18 @@ class AppRoutes {
         return slideFromLeft(Subscriptions());
       case '/add-article':
         return fadeTransition(AddArticle());
+        case '/settings':
+        return fadeTransition(SettingsPage());
+        case '/profile':
+        final maybeId = settings.arguments as int?;
+        return MaterialPageRoute(
+          builder: (context) {
+            final auth = Provider.of<AuthProvider>(context, listen: false);
+            final profileId = maybeId ?? auth.Id!;
+            return UserProfilePage(userId: profileId);
+          },
+        );
+
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

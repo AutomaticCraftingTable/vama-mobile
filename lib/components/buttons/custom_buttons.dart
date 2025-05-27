@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vama_mobile/theme/app_colors.dart';
+import 'package:vama_mobile/theme/light_theme.dart';
 
 class PrimaryButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -9,8 +9,8 @@ class PrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor:AppColors.primary,
-        foregroundColor: AppColors.textPrimary,
+        backgroundColor:LightTheme.primary,
+        foregroundColor: LightTheme.textPrimary,
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
         textStyle: const TextStyle(fontWeight: FontWeight.bold),
       ),
@@ -29,8 +29,8 @@ class SecondaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.secondary,
-        foregroundColor: AppColors.text,
+        backgroundColor: LightTheme.secondary,
+        foregroundColor: LightTheme.text,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),  
         textStyle: const TextStyle(fontWeight: FontWeight.bold),
         shape: RoundedRectangleBorder( 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vama_mobile/components/buttons/sign_up_button.dart';
 import 'package:vama_mobile/components/custom_textfield.dart';
-import 'package:vama_mobile/theme/app_colors.dart';
+import 'package:vama_mobile/theme/light_theme.dart';
 import 'package:vama_mobile/components/auth_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:vama_mobile/components/headers/header.dart';
@@ -45,7 +45,7 @@ class _SignPageState extends State<SignPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.secondary,
+      backgroundColor: LightTheme.secondary,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -58,7 +58,7 @@ class _SignPageState extends State<SignPage> {
               Text(
                 "Witamy w VAMA!",
                 style: TextStyle(
-                  color: AppColors.text,
+                  color: LightTheme.text,
                   fontSize: 24,
                 ),
               ),
@@ -66,7 +66,7 @@ class _SignPageState extends State<SignPage> {
               Text(
                 "Zarejestruj się, proszę.",
                 style: TextStyle(
-                  color: AppColors.text,
+                  color: LightTheme.text,
                   fontSize: 18,
                 ),
               ),
@@ -92,7 +92,7 @@ class _SignPageState extends State<SignPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Checkbox(
-                    activeColor: AppColors.checkBox,
+                    activeColor: LightTheme.checkBox,
                     value: _isChecked,
                     onChanged: (bool? value) {
                       setState(() {
@@ -103,7 +103,7 @@ class _SignPageState extends State<SignPage> {
                   Flexible(
                     child: Text(
                       "Zaznaczając, akceptujesz Warunki korzystania.",
-                      style: TextStyle(fontSize: 13, color: AppColors.textSecondaryLight),
+                      style: TextStyle(fontSize: 13, color: LightTheme.textSecondaryLight),
                     ),
                   ),
                 ],
@@ -122,7 +122,7 @@ class _SignPageState extends State<SignPage> {
                 children: [
                   Text(
                     "albo ",
-                    style: TextStyle(color: AppColors.textSecondaryLight),
+                    style: TextStyle(color: LightTheme.textSecondaryLight),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -131,7 +131,7 @@ class _SignPageState extends State<SignPage> {
                     child: Text(
                       "zaloguj się",
                       style: TextStyle(
-                        color: AppColors.text,
+                        color: LightTheme.text,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

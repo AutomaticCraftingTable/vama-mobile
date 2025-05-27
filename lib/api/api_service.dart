@@ -61,6 +61,7 @@ class ApiService {
       }
     } catch (e) {
       print("Error fetching article: $e");
+      
       rethrow;
     }
   }
@@ -80,6 +81,25 @@ class ApiService {
     }
   } catch (e) {
     print("Error reporting article: $e");
+    rethrow;
+  }
+}
+Future<void> reportProfile(int accountId, String message) async {
+  try {
+    final response = await dio.post(
+      '/api/profile/$accountId/report', 
+      data: {
+        'message': message,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print("Profile reported successfully");
+    } else {
+      throw Exception("Failed to report profile");
+    }
+  } catch (e) {
+    print("Error reporting profile: $e");
     rethrow;
   }
 }
@@ -197,5 +217,108 @@ Future<void> deleteComment(int commentId) async {
     throw Exception('Failed to unlike comment');
   }
 }
+Future<void> createProfile({
+    required String nickname,
+    required String description,
+  }) async {
+    final data = {
+      'nickname': nickname,
+      'description': description,
+    };
+    final response = await dio.post(
+      '/api/profile', 
+      data: data,
+    );
 
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception('Failed to create/update profile');
+    }
+  }
+  Future<void> deleteProfile() async {
+    final response = await dio.delete('/api/profile'); 
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      throw Exception('Failed to delete profile');
+    }
+  }
+  Future<void> changeAccountSettings({
+    required String email,
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    final data = <String, dynamic>{};
+    if (email.isNotEmpty) data['email'] = email;
+    if (oldPassword.isNotEmpty && newPassword.isNotEmpty) {
+      data['oldPassword'] = oldPassword;
+      data['newPassword'] = newPassword;
+    }
+
+    final response = await dio.patch(
+      '/api/account',
+      data: data,
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Failed to change account settings');
+    }
+  }
+  Future<void> deleteAccount() async {
+    final response = await dio.delete('/api/account'); 
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      throw Exception('Failed to delete account');
+    }
+  }
+  Future<void> changeProfileSettings({
+    required String nickname,
+    required String description,
+  }) async {
+    final data = <String, dynamic>{};
+
+    if (nickname.isNotEmpty) data['nickname'] = nickname;
+    if (description.isNotEmpty) data['description'] = description;
+     {
+    }
+
+    try {
+      final response = await dio.patch(
+        '/api/profile', 
+        data: data,
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update profile');
+      }
+
+      print('Profile updated successfully');
+    } catch (e) {
+      throw Exception('Error while updating profile: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchUserProfile(int accountId) async {
+  try {
+    final response = await dio.get('/api/profile/$accountId');
+    if (response.statusCode == 200) {
+      return response.data;
+    } else {
+      throw Exception("Failed to load user profile");
+    }
+  } catch (e) {
+    print("Error fetching user profile: $e");
+    rethrow;
+  }
+}
+Future<Map<String, dynamic>> fetchOwnProfile() async {
+  try {
+    final response = await dio.get('/api/profile');
+    if (response.statusCode == 200) {
+      print("Own profile fetched successfully");
+      return response.data;
+    } else {
+      throw Exception("Failed to load user profile");
+    }
+  } catch (e) {
+    print("Error fetching user profile: $e");
+    rethrow;
+  }
+}
+  
 }

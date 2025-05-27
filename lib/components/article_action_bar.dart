@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vama_mobile/theme/app_colors.dart';
+import 'package:vama_mobile/theme/light_theme.dart';
 
 class ArticleActionBar extends StatelessWidget {
   final bool isLiked;
@@ -29,10 +29,10 @@ class ArticleActionBar extends StatelessWidget {
               heroTag: "comment_button",
               onPressed: onComment,
               elevation: 2, 
-              backgroundColor: AppColors.textPrimary,
-              splashColor: AppColors.primary,
+              backgroundColor: LightTheme.textPrimary,
+              splashColor: LightTheme.primary,
               highlightElevation: 0,
-              child: Icon(Icons.comment, color: AppColors.text),
+              child: Icon(Icons.comment, color: LightTheme.text),
             ),
           ),
           Row(
@@ -46,7 +46,7 @@ class ArticleActionBar extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 child: Text(
                   "$likeCount",
-                  style: const TextStyle(fontSize: 14, color: AppColors.text),
+                  style: const TextStyle(fontSize: 14, color: LightTheme.text),
                 ),
               ),
               const SizedBox(width: 8),
@@ -55,12 +55,12 @@ class ArticleActionBar extends StatelessWidget {
                 heroTag: "like_button",
                 onPressed: onLike,
                 elevation: 2,
-                backgroundColor: AppColors.textPrimary,
-                splashColor: AppColors.primary,
+                backgroundColor: LightTheme.textPrimary,
+                splashColor: LightTheme.primary,
                 highlightElevation: 0,
                 child: Icon(
                   isLiked ? Icons.favorite : Icons.favorite_border,
-                  color: isLiked ? AppColors.like : AppColors.text,
+                  color: isLiked ? LightTheme.like : LightTheme.textSecondaryLight,
                 ),
               ),
             ],

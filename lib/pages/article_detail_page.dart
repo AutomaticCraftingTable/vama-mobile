@@ -5,7 +5,7 @@ import 'package:vama_mobile/components/article_author_card.dart';
 import 'package:vama_mobile/components/auth_provider.dart';
 import 'package:vama_mobile/components/comment_item.dart';
 import 'package:vama_mobile/components/headers/header.dart';
-import 'package:vama_mobile/theme/app_colors.dart';
+import 'package:vama_mobile/theme/light_theme.dart';
 import 'package:vama_mobile/components/article_action_bar.dart';
 
 class ArticleDetailPage extends StatefulWidget {
@@ -24,23 +24,28 @@ class ArticleDetailPage extends StatefulWidget {
 
 class _ArticleDetailPageState extends State<ArticleDetailPage> {
   bool isLiked = false;
-  late Future<Map<String, dynamic>> articleFuture;
-  Map<String, dynamic>? article;
+  late Future<Map<String?, dynamic>> articleFuture;
+  late Map<String?, dynamic> article;
 
   Set<int> likedComments = {};
   bool isWritingComment = false;
   final TextEditingController commentController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.initialArticleData != null) {
-      article = widget.initialArticleData!;
-      articleFuture = Future.value(article);
-    } else {
-      articleFuture = ApiService().fetchArticle(widget.articleId);
-    }
+ @override
+void initState() {
+  super.initState();
+
+  if (widget.initialArticleData != null) {
+    article = widget.initialArticleData!;
   }
+
+  articleFuture = ApiService().fetchArticle(widget.articleId).then((data) {
+    setState(() {
+      article = data;
+    });
+    return data;
+  });
+}
 
   void toggleLike() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -175,7 +180,7 @@ void deleteComment(int commentId) async {
   try {
     await ApiService().deleteComment(commentId);
     setState(() {
-      article?['comments'].removeWhere((c) => c['id'] == commentId);
+      article['comments'].removeWhere((c) => c['id'] == commentId);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Komentarz został usunięty')),
@@ -196,9 +201,8 @@ void deleteComment(int commentId) async {
         child: Column(
           children: [
             const Header(),
-            const SizedBox(height: 10),
             Expanded(
-              child: FutureBuilder<Map<String, dynamic>>(
+              child: FutureBuilder<Map<String?, dynamic>>(
                 future: articleFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -212,46 +216,45 @@ void deleteComment(int commentId) async {
                   if (!snapshot.hasData || snapshot.data == null) {
                     return const Center(child: Text('No article available'));
                   }
-
                   return Padding(
                     padding: const EdgeInsets.all(16),
                     child: ListView(
                       padding: const EdgeInsets.only(bottom: 80),
                       children: [                      
-                          ArticleAuthorCard(
-                          article: article!,
+                        ArticleAuthorCard(
+                          article: article,
                           articleId: widget.articleId,
                           onTapProfile: goToUserProfile,
                         ),                      
                         const SizedBox(height: 16),
                         Text(
-                          article!['title'],
+                        (article['title'] ?? 'Brak tytułu').toString(),
                           style: const TextStyle(
-                            fontSize: 22,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.text
+                            color: LightTheme.text
                           ),
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          article!['content'],
+                           (article['content'] ?? 'Brak treści').toString(),
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 12,
                             height: 1.5,
-                            color: AppColors.text
+                            color: LightTheme.text
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 30),
                         Text(
-                          "Komentarzy: ${article?['comments']?.length ?? 0}",
+                          "Komentarzy: ${article['comments']?.length ?? 0}",
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.text,
+                            color: LightTheme.text,
                             ),
                         ),
                         const SizedBox(height: 10),
-                        ...article!['comments'].map<Widget>((comment) {
+                        ...article['comments'].map<Widget>((comment) {
                           final int commentId = comment['id'];
                           return CommentItem(
                             comment: comment,
@@ -284,7 +287,7 @@ void deleteComment(int commentId) async {
                 controller: commentController,
                 decoration: InputDecoration(
                   hintText: 'Napisz komentarz...',
-                  hintStyle: TextStyle(color: AppColors.textSecondary),
+                  hintStyle: TextStyle(color: LightTheme.textSecondary),
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
@@ -298,7 +301,7 @@ void deleteComment(int commentId) async {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: AppColors.primary),
+                    borderSide: BorderSide(color: LightTheme.primary),
                   ),
                 ),
               ),
@@ -309,7 +312,7 @@ void deleteComment(int commentId) async {
             onPressed: addComment,
             child: Icon(Icons.send, color: Colors.white),
             mini: true,
-            backgroundColor: AppColors.primary,
+            backgroundColor: LightTheme.primary,
           ),
         ],
       ),
@@ -327,7 +330,3 @@ void deleteComment(int commentId) async {
     );
   }
 }
-
-
-
-
