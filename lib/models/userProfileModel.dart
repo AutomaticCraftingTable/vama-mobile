@@ -36,23 +36,35 @@ class UserProfile {
 class Article {
   final String? thumbnail;
   final List<String> tags;
+  final int id;
 
   Article({
     this.thumbnail,
     required this.tags,
+    required this.id,
   });
 
   factory Article.fromJson(Map<String, dynamic> json) {
-    List<String> tagsList;
+     late List<String> tagsList;
     if (json['tags'] is String) {
-      tagsList = (json['tags'] as String)
-          .split(',')
-          .map((tag) => tag.trim())
-          .where((tag) => tag.isNotEmpty)
-          .toList();
+      final raw = json['tags'] as String;
+      if (raw.contains('#') && !raw.contains(',')) {
+        tagsList = raw
+            .split('#')
+            .map((tag) => tag.trim())
+            .where((tag) => tag.isNotEmpty)
+            .toList();
+      } else {
+        tagsList = raw
+            .split(',')
+            .map((tag) => tag.replaceAll('#', '').trim())
+            .where((tag) => tag.isNotEmpty)
+            .toList();
+      }
     } else if (json['tags'] is List) {
       tagsList = (json['tags'] as List<dynamic>)
-          .map((tag) => tag.toString())
+          .map((tag) => tag.toString().trim())
+          .where((tag) => tag.isNotEmpty)
           .toList();
     } else {
       tagsList = [];
@@ -61,6 +73,7 @@ class Article {
     return Article(
       thumbnail: json['thumbnail'] as String?,
       tags: tagsList,
+       id: json['id'] as int,
     );
   }
 }

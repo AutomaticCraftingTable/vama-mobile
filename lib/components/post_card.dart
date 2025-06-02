@@ -42,6 +42,10 @@ class PostCard extends StatelessWidget {
     );
     }
 
+    bool isValidUrl(String? url) {
+      return url != null && (url.startsWith('http://') || url.startsWith('https://'));
+    }
+
     return InkWell(
       onTap: () {
          Navigator.push(
@@ -94,8 +98,8 @@ class PostCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(author, style: const TextStyle(fontWeight: FontWeight.bold)),
-                        Text("$followers followers", style: const TextStyle(fontSize: 12)),
+                        Text(author, style: const TextStyle(fontWeight: FontWeight.bold, color: LightTheme.text)),
+                        Text("$followers followers", style: const TextStyle(fontSize: 12, color: LightTheme.textDimmed)),
                       ],
                     ),
                   ),
@@ -111,15 +115,29 @@ class PostCard extends StatelessWidget {
 
               const SizedBox(height: 10),
 
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  thumbnail,
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-              ),
+              isValidUrl(thumbnail)
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.zero,
+                      child: Image.network(
+                        thumbnail,
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : Container(
+                      width: double.infinity,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.zero,
+                      ),
+                      child: const Icon(
+                        Icons.image,
+                        size: 40,
+                        color: LightTheme.textDimmed,
+                      ),
+                    ),
 
               const SizedBox(height: 10),
         
@@ -129,7 +147,7 @@ class PostCard extends StatelessWidget {
                   return Chip(
                     label: Text(tag, style: const TextStyle(fontWeight: FontWeight.bold, color: LightTheme.text)),
                     backgroundColor: LightTheme.secondary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                   );
                 }).toList(),
               ),

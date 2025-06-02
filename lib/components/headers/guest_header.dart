@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vama_mobile/theme/light_theme.dart';
-import 'package:vama_mobile/components/auth_provider.dart';
+import 'package:vama_mobile/provider/auth_provider.dart';
 
 class GuestHeader extends StatefulWidget {
   const GuestHeader({super.key});
@@ -38,15 +38,14 @@ class _GuestHeaderState extends State<GuestHeader> {
                 controller: _searchController,
                 autofocus: true,
                 decoration: InputDecoration(
-                  hintText: "Szukaj...",
                   prefixIcon: const Icon(Icons.search),
                   contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(4),
                     borderSide: BorderSide.none,
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(4),
                     borderSide: BorderSide.none,
                   ),
                   fillColor: LightTheme.buttonGrey,
