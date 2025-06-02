@@ -5,7 +5,6 @@ import 'package:timeago/timeago.dart' as timeago;
 class CommentItem extends StatelessWidget {
   final Map<String, dynamic> comment;
   final bool isLiked;
-  final VoidCallback onLike;
   final VoidCallback onTapProfile;
   final VoidCallback? onReport;
   final VoidCallback? onDelete;
@@ -15,7 +14,6 @@ class CommentItem extends StatelessWidget {
     super.key,
     required this.comment,
     required this.isLiked,
-    required this.onLike,
     required this.onTapProfile,
     required this.currentUsername,
     this.onReport,
@@ -92,22 +90,6 @@ class CommentItem extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    GestureDetector(
-                      onTap: onLike,
-                      child: Icon(
-                        isLiked ? Icons.favorite : Icons.favorite_border,
-                        size: 18,
-                        color: isLiked ? LightTheme.like : LightTheme.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      "$likes",
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: LightTheme.textSecondary,
-                      ),
-                    ),
                     const SizedBox(width: 10),
                     Text(
                       timeAgo,

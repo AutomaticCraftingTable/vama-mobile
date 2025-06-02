@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vama_mobile/api/api_service.dart';
-import 'package:vama_mobile/components/article_author_card.dart';
-import 'package:vama_mobile/components/auth_provider.dart';
-import 'package:vama_mobile/components/comment_item.dart';
+import 'package:vama_mobile/components/%D1%81ustom_snack_bar.dart';
+import 'package:vama_mobile/components/article_items/article_author_card.dart';
+import 'package:vama_mobile/provider/auth_provider.dart';
+import 'package:vama_mobile/components/article_items/comment_item.dart';
 import 'package:vama_mobile/components/headers/header.dart';
 import 'package:vama_mobile/theme/light_theme.dart';
-import 'package:vama_mobile/components/article_action_bar.dart';
+import 'package:vama_mobile/components/article_items/article_action_bar.dart';
 
 class ArticleDetailPage extends StatefulWidget {
   final int articleId;
@@ -47,150 +48,124 @@ void initState() {
   });
 }
 
-  void toggleLike() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    if (!authProvider.isLoggedIn) {
-      Navigator.pushNamed(context, '/login');
-      return;
-    }
+void toggleLike() async {
+  final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    try {
-      setState(() {
-        isLiked = !isLiked;
-        if (article != null) {
-          article!['likes'] += isLiked ? 1 : -1;
-        }
-      });
-
-      if (isLiked) {
-        await ApiService().likeArticle(widget.articleId);
-      } else {
-        await ApiService().unlikeArticle(widget.articleId);
-      }
-    } catch (e) {
-      setState(() {
-        isLiked = !isLiked;
-        if (article != null) {
-          article!['likes'] += isLiked ? 1 : -1;
-        }
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Błąd przy aktualizacji polubienia')),
-      );
-    }
+  if (!authProvider.isLoggedIn) {
+    Navigator.pushNamed(context, '/login');
+    return;
   }
 
-  void toggleCommentLike(int commentId) async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    if (!authProvider.isLoggedIn) {
-      Navigator.pushNamed(context, '/login');
-      return;
-    }
-
-    final comments = article?['comments'] as List<dynamic>;
-    final comment = comments.firstWhere((c) => c['id'] == commentId);
-    final alreadyLiked = likedComments.contains(commentId);
-
-    setState(() {
-      if (alreadyLiked) {
-        likedComments.remove(commentId);
-        comment['likes'] = (comment['likes'] ?? 0) - 1;
-      } else {
-        likedComments.add(commentId);
-        comment['likes'] = (comment['likes'] ?? 0) + 1;
-      }
-    });
-
-    try {
-      if (alreadyLiked) {
-        await ApiService().unlikeComment(commentId);
-      } else {
-        await ApiService().likeComment(commentId);
-      }
-    } catch (e) {
-      setState(() {
-        if (alreadyLiked) {
-          likedComments.add(commentId);
-          comment['likes'] += 1;
-        } else {
-          likedComments.remove(commentId);
-          comment['likes'] -= 1;
-        }
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Błąd przy aktualizacji polubienia komentarza')),
-      );
-    }
+  if (!authProvider.hasProfile) {
+    Navigator.pushNamed(context, '/settings');
+    return;
   }
 
-  void addComment() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    if (!authProvider.isLoggedIn) {
-      Navigator.pushNamed(context, '/login');
-      return;
-    }
-
-    final text = commentController.text.trim();
-    if (text.isEmpty) return;
-
-    final articleId = article?['id'];
-    if (articleId == null) return;
-
-    setState(() {
-      isWritingComment = false;
-      commentController.clear();
-    });
-    try {
-      await ApiService().addCommentToArticle(articleId, text);
-      setState(() {
-        final newComment = {
-          'id': DateTime.now().millisecondsSinceEpoch,
-           'causer': authProvider.nickname ?? 'Unknown',
-          'content': text,
-          'logo': 'https://example.com/your_avatar.png',
-          'created_at': DateTime.now().toIso8601String(),
-          'likes': 0,
-        };
-        article?['comments'].insert(0, newComment);
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Błąd przy dodawaniu komentarza')),
-      );
-    }
-  }
-  void goToUserProfile() {
-    print('User profile tapped!');
-  }
-  void reportComment(int commentId) async {
   try {
-    await ApiService().reportComment(commentId, 'Komentarz jest nieodpowiedni'); 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Komentarz został zgłoszony')),
-    );
+    setState(() {
+      isLiked = !isLiked;
+      if (article != null) {
+        article!['likes'] += isLiked ? 1 : -1;
+      }
+    });
+
+    if (isLiked) {
+      await ApiService().likeArticle(widget.articleId);
+    } else {
+      await ApiService().unlikeArticle(widget.articleId);
+    }
   } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Błąd przy zgłaszaniu komentarza')),
-    );
+    setState(() {
+      isLiked = !isLiked;
+      if (article != null) {
+        article!['likes'] += isLiked ? 1 : -1;
+      }
+    });
+
+    showCustomSnackBar(context, 'Błąd przy aktualizacji polubienia');
   }
 }
+void addComment() async {
+  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+  if (!authProvider.isLoggedIn) {
+    Navigator.pushNamed(context, '/login');
+    return;
+  }
+
+  if (!authProvider.hasProfile) {
+    Navigator.pushNamed(context, '/settings');
+    return;
+  }
+
+  final text = commentController.text.trim();
+  if (text.isEmpty) return;
+
+  final articleId = article?['id'];
+  if (articleId == null) return;
+
+  setState(() {
+    isWritingComment = false;
+    commentController.clear();
+  });
+
+  try {
+    await ApiService().addCommentToArticle(articleId, text);
+
+    setState(() {
+      final newComment = {
+        'id': DateTime.now().millisecondsSinceEpoch,
+        'causer': authProvider.nickname ?? 'Unknown',
+        'content': text,
+        'logo': 'https://example.com/your_avatar.png',
+        'created_at': DateTime.now().toIso8601String(),
+        'likes': 0,
+      };
+      article?['comments'].insert(0, newComment);
+    });
+  } catch (e) {
+    showCustomSnackBar(context, 'Błąd przy dodawaniu komentarza');
+  }
+}
+
+void goToUserProfile() {
+  final articleId = article['id'];
+  Navigator.pushNamed(context, "/profile", arguments: articleId);
+}
+
+void reportComment(int commentId) async {
+  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+  if (!authProvider.isLoggedIn) {
+    Navigator.pushNamed(context, '/login');
+    return;
+  }
+
+  if (!authProvider.hasProfile) {
+    Navigator.pushNamed(context, '/settings');
+    return;
+  }
+
+  try {
+    await ApiService().reportComment(commentId, 'Komentarz jest nieodpowiedni');
+    showCustomSnackBar(context, 'Komentarz został zgłoszony');
+  } catch (e) {
+    showCustomSnackBar(context, 'Błąd przy zgłaszaniu komentarza');
+  }
+}
+
 void deleteComment(int commentId) async {
   try {
     await ApiService().deleteComment(commentId);
     setState(() {
       article['comments'].removeWhere((c) => c['id'] == commentId);
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Komentarz został usunięty')),
-    );
+    showCustomSnackBar(context, 'Komentarz został usunięty');
   } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Błąd przy usuwaniu komentarza')),
-    );
+    showCustomSnackBar(context, 'Błąd przy usuwaniu komentarza');
   }
 }
+
 
   @override
   Widget build(BuildContext context) {
@@ -248,7 +223,7 @@ void deleteComment(int commentId) async {
                         Text(
                           "Komentarzy: ${article['comments']?.length ?? 0}",
                           style: const TextStyle(
-                            fontSize: 12,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: LightTheme.text,
                             ),
@@ -258,8 +233,7 @@ void deleteComment(int commentId) async {
                           final int commentId = comment['id'];
                           return CommentItem(
                             comment: comment,
-                            isLiked: likedComments.contains(commentId),
-                            onLike: () => toggleCommentLike(commentId),
+                            isLiked: likedComments.contains(commentId),                         
                             onTapProfile: goToUserProfile,
                             currentUsername: currentUsername,
                             onReport: () => reportComment(commentId),
@@ -291,16 +265,16 @@ void deleteComment(int commentId) async {
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(4),
                     borderSide: BorderSide.none,
                   ),
                   contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(4),
                     borderSide: BorderSide(color: Colors.grey.withOpacity(0.4)),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(4),
                     borderSide: BorderSide(color: LightTheme.primary),
                   ),
                 ),
@@ -310,7 +284,7 @@ void deleteComment(int commentId) async {
           const SizedBox(width: 8),
           FloatingActionButton(
             onPressed: addComment,
-            child: Icon(Icons.send, color: Colors.white),
+            child: Icon(Icons.send, color: LightTheme.textPrimary),
             mini: true,
             backgroundColor: LightTheme.primary,
           ),

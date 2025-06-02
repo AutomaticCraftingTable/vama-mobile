@@ -56,7 +56,7 @@ class ArticleActionBar extends StatelessWidget {
                 onPressed: onLike,
                 elevation: 2,
                 backgroundColor: LightTheme.textPrimary,
-                splashColor: LightTheme.primary,
+                splashColor: LightTheme.textPrimary,
                 highlightElevation: 0,
                 child: Icon(
                   isLiked ? Icons.favorite : Icons.favorite_border,

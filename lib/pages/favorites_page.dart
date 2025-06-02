@@ -82,6 +82,18 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                       MaterialPageRoute(
                                         builder: (_) => ArticleDetailPage(
                                           articleId: article['id'],
+                                            initialArticleData: {
+                                            'id': article['id'],
+                                            'author': article['author'],
+                                            'thumbnail': article['thumbnail'],
+                                            'tags': article['tags'],
+                                            'title': article['title'],
+                                            'followers': article['followers'],
+                                            'content': article['content'],
+                                            'likes': article['likes'],
+                                            'comments': article['comments'],
+                                            'logo': article['logo'],
+                                          },
                                         ),
                                       ),
                                     );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vama_mobile/components/auth_provider.dart';
-import 'package:vama_mobile/components/custom_bottom_nav_bar.dart';
+import 'package:vama_mobile/provider/auth_provider.dart';
+import 'package:vama_mobile/components/bottom_panel/custom_bottom_nav_bar.dart';
 import 'package:vama_mobile/pages/add_article_page.dart';
 import 'package:vama_mobile/pages/content_page.dart';
 import 'package:vama_mobile/pages/favorites_page.dart';

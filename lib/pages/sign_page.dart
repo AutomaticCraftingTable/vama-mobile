@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:vama_mobile/components/%D1%81ustom_snack_bar.dart';
 import 'package:vama_mobile/components/buttons/sign_up_button.dart';
 import 'package:vama_mobile/components/custom_textfield.dart';
 import 'package:vama_mobile/theme/light_theme.dart';
-import 'package:vama_mobile/components/auth_provider.dart';
+import 'package:vama_mobile/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:vama_mobile/components/headers/header.dart';
 
@@ -19,27 +20,28 @@ class _SignPageState extends State<SignPage> {
   bool _isChecked = false;
 
   void signUser() async {
-    if (!_isChecked) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Musisz zaakceptować Warunki korzystania.")),
-      );
-      return;
-    }
-
-    final provider = Provider.of<AuthProvider>(context, listen: false);
-    final success = await provider.register(usernameController.text, passwordController.text);
-
-    if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Rejestracja zakończona sukcesem! Możesz się teraz zalogować.")),
-      );
-      Navigator.pushNamed(context, '/login');
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Użytkownik już zarejestrowany.")),
-      );
-    }
+  if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
+    showCustomSnackBar(context, "Wszystkie pola muszą być wypełnione", isError: true);
+    return;
   }
+
+  if (!_isChecked) {
+    showCustomSnackBar(context, "Musisz zaakceptować Warunki korzystania.", isError: true);
+    return;
+  }
+
+  final provider = Provider.of<AuthProvider>(context, listen: false);
+  final success = await provider.register(usernameController.text, passwordController.text);
+
+  if (success) {
+    showCustomSnackBar(context, "Rejestracja zakończona sukcesem! Możesz się teraz zalogować.");
+    Navigator.pushNamed(context, '/login');
+  } else {
+    showCustomSnackBar(context, "Użytkownik już zarejestrowany.", isError: true);
+  }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +50,13 @@ class _SignPageState extends State<SignPage> {
       backgroundColor: LightTheme.secondary,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Header(),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 10),
 
               Text(
                 "Witamy w VAMA!",
@@ -64,9 +67,9 @@ class _SignPageState extends State<SignPage> {
               ),
 
               Text(
-                "Zarejestruj się, proszę.",
+                "Zarejestruj się, proszę",
                 style: TextStyle(
-                  color: LightTheme.text,
+                  color: LightTheme.textSecondary,
                   fontSize: 18,
                 ),
               ),
@@ -103,7 +106,7 @@ class _SignPageState extends State<SignPage> {
                   Flexible(
                     child: Text(
                       "Zaznaczając, akceptujesz Warunki korzystania.",
-                      style: TextStyle(fontSize: 13, color: LightTheme.textSecondaryLight),
+                      style: TextStyle(fontSize: 13, color: LightTheme.textDimmed),
                     ),
                   ),
                 ],
@@ -122,7 +125,7 @@ class _SignPageState extends State<SignPage> {
                 children: [
                   Text(
                     "albo ",
-                    style: TextStyle(color: LightTheme.textSecondaryLight),
+                    style: TextStyle(color: LightTheme.textSecondary),
                   ),
                   GestureDetector(
                     onTap: () {

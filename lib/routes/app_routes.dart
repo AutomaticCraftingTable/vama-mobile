@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vama_mobile/components/auth_provider.dart';
+import 'package:vama_mobile/provider/auth_provider.dart';
 import 'package:vama_mobile/pages/login_page.dart';
 import 'package:vama_mobile/pages/settings_page.dart';
 import 'package:vama_mobile/pages/sign_page.dart';

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vama_mobile/api/api_service.dart';
-import 'package:vama_mobile/components/auth_provider.dart';
+import 'package:vama_mobile/components/%D1%81ustom_snack_bar.dart';
+import 'package:vama_mobile/components/settings.items/danger_zone_section.dart';
+import 'package:vama_mobile/components/settings.items/profile_action_buttons.dart';
+import 'package:vama_mobile/provider/auth_provider.dart';
 import 'package:vama_mobile/components/headers/header.dart';
 import 'dart:io';
 import 'package:vama_mobile/theme/light_theme.dart';
@@ -32,124 +35,113 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _isLoading = false;
 
   void _createProfile() async {
-    if (!isEditing && nickname == null) {
-      setState(() => isEditing = true);
+  if (!isEditing && nickname == null) {
+    setState(() => isEditing = true);
+    return;
+  }
+  if (isEditing) {
+    if (nicknameController.text.isEmpty || descriptionController.text.isEmpty) {
+      showCustomSnackBar(context, 'Wypełnij wszystkie pola');
       return;
     }
-    if (isEditing) {
-      if (nicknameController.text.isEmpty || descriptionController.text.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Wypełnij wszystkie pola')),
-        );
-        return;
-      }
 
-      setState(() => _isLoading = true);
-      try {
-        await ApiService().createProfile(
-          nickname: nicknameController.text,
-          description: descriptionController.text,
-        );
-
-        setState(() {
-          nickname = nicknameController.text;
-          description = descriptionController.text;
-          isEditing = false;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Profil został utworzony!')),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Błąd: ${e.toString()}')),
-        );
-      } finally {
-        setState(() => _isLoading = false);
-      }
-    } else {
-      setState(() {
-        isEditing = true;
-        nicknameController.text = nickname ?? '';
-        descriptionController.text = description ?? '';
-      });
-    }
-  }
-  bool _isDeleting = false;
-
-  void _deleteProfile() async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Usuń profil?'),
-        content: Text('Na pewno chcesz usunąć profil?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: Text('Anuluj')),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: Text('Usuń')),
-        ],
-      ),
-    );
-    if (confirm != true) return;
-
-    setState(() => _isDeleting = true);
+    setState(() => _isLoading = true);
     try {
-      await ApiService().deleteProfile();
+      await ApiService().createProfile(
+        nickname: nicknameController.text,
+        description: descriptionController.text,
+      );
+
+      final auth = Provider.of<AuthProvider>(context, listen: false);
+      auth.setHasProfile(true);
+
       setState(() {
-        nickname = null;
-        description = null;
+        nickname = nicknameController.text;
+        description = descriptionController.text;
         isEditing = false;
-        nicknameController.clear();
-        descriptionController.clear();
-        profileImage = null;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Profil usunięty')),
-      );
+
+      showCustomSnackBar(context, 'Profil został utworzony!');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Błąd usuwania: ${e.toString()}')),
-      );
+      showCustomSnackBar(context, 'Błąd: ${e.toString()}');
     } finally {
-      setState(() => _isDeleting = false);
+      setState(() => _isLoading = false);
     }
+  } else {
+    setState(() {
+      isEditing = true;
+      nicknameController.text = nickname ?? '';
+      descriptionController.text = description ?? '';
+    });
   }
-  Future<void> _saveAccountSettings() async {
-    if (_emailCtrl.text.isEmpty &&
-        (_oldPassCtrl.text.isEmpty || _newPassCtrl.text.isEmpty)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Wypełnij email lub oba поля hasła')),
-      );
-      return;
-    }
-    setState(() => _loadingAccount = true);
-    try {
-      await ApiService().changeAccountSettings(
-        email: _emailCtrl.text,
-        oldPassword: _oldPassCtrl.text,
-        newPassword: _newPassCtrl.text,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Ustawienia konta zaktualizowane!')),
-      );
-      _oldPassCtrl.clear();
-      _newPassCtrl.clear();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Błąd: ${e.toString()}')),
-      );
-    } finally {
-      setState(() => _loadingAccount = false);
-    }
-  }
-  Future<void> _deleteAccount() async {
+}
+bool _isDeleting = false;
+
+void _deleteProfile() async {
   final confirm = await showDialog<bool>(
     context: context,
     builder: (_) => AlertDialog(
-      title: Text('Usuń konto?'),
-      content: Text('Na pewno chcesz usunąć konto na stałe?'),
+      title: const Text('Usuń profil?', style:TextStyle(color: LightTheme.primary),),
+      content: const Text('Na pewno chcesz usunąć profil?', style:TextStyle(color: LightTheme.text)),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context, false), child: Text('Anuluj')),
-        TextButton(onPressed: () => Navigator.pop(context, true), child: Text('Usuń')),
+        TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Anuluj', style: TextStyle(color: LightTheme.primary))),
+        TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Usuń', style: TextStyle(color: LightTheme.danger))),
+      ],
+    ),
+  );
+  if (confirm != true) return;
+
+  setState(() => _isDeleting = true);
+  try {
+    await ApiService().deleteProfile();
+    setState(() {
+      nickname = null;
+      description = null;
+      isEditing = false;
+      nicknameController.clear();
+      descriptionController.clear();
+      profileImage = null;
+    });
+    showCustomSnackBar(context, 'Profil usunięty');
+  } catch (e) {
+    showCustomSnackBar(context, 'Błąd usuwania: ${e.toString()}');
+  } finally {
+    setState(() => _isDeleting = false);
+  }
+}
+
+Future<void> _saveAccountSettings() async {
+  if (_emailCtrl.text.isEmpty &&
+      (_oldPassCtrl.text.isEmpty || _newPassCtrl.text.isEmpty)) {
+    showCustomSnackBar(context, 'Wypełnij email lub oba pola hasła');
+    return;
+  }
+  setState(() => _loadingAccount = true);
+  try {
+    await ApiService().changeAccountSettings(
+      email: _emailCtrl.text,
+      oldPassword: _oldPassCtrl.text,
+      newPassword: _newPassCtrl.text,
+    );
+    showCustomSnackBar(context, 'Ustawienia konta zaktualizowane!');
+    _oldPassCtrl.clear();
+    _newPassCtrl.clear();
+  } catch (e) {
+    showCustomSnackBar(context, 'Błąd: ${e.toString()}');
+  } finally {
+    setState(() => _loadingAccount = false);
+  }
+}
+
+Future<void> _deleteAccount() async {
+  final confirm = await showDialog<bool>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: const Text('Usuń konto?',style: TextStyle(color: LightTheme.primary)),
+      content: const Text('Na pewno chcesz usunąć konto na stałe?', style: TextStyle(color: LightTheme.primary),),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Anuluj', style: TextStyle(color: LightTheme.primary))),
+        TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Usuń', style:TextStyle(color: LightTheme.danger))),
       ],
     ),
   );
@@ -158,32 +150,23 @@ class _SettingsPageState extends State<SettingsPage> {
   setState(() => _isDeletingAccount = true);
   try {
     await ApiService().deleteAccount();
-
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     authProvider.logOut();
-
     Navigator.of(context).pushReplacementNamed('/home');
-
   } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Błąd usuwania konta: ${e.toString()}')),
-    );
+    showCustomSnackBar(context, 'Błąd usuwania konta: ${e.toString()}');
   } finally {
     setState(() => _isDeletingAccount = false);
   }
 }
+
 Future<void> _changeProfileSettings() async {
   if (nicknameController.text.isEmpty || descriptionController.text.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Wypełnij wszystkie pola')),
-    );
+    showCustomSnackBar(context, 'Wypełnij wszystkie pola');
     return;
   }
 
-  setState(() {
-    _isLoading = true;
-  });
-
+  setState(() => _isLoading = true);
   try {
     await ApiService().changeProfileSettings(
       nickname: nicknameController.text,
@@ -196,19 +179,14 @@ Future<void> _changeProfileSettings() async {
       isEditing = false;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Profil został zaktualizowany!')),
-    );
+    showCustomSnackBar(context, 'Profil został zaktualizowany!');
   } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Błąd: ${e.toString()}')),
-    );
+    showCustomSnackBar(context, 'Błąd: ${e.toString()}');
   } finally {
-    setState(() {
-      _isLoading = false; 
-    });
+    setState(() => _isLoading = false);
   }
 }
+
 
 
  @override
@@ -376,112 +354,30 @@ Widget build(BuildContext context) {
             ),
             SizedBox(height: 20),
           ],
-        Column(
-          children: [
-            if (nickname == null) 
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: LightTheme.primary,
-                ).copyWith(
-                  foregroundColor: MaterialStateProperty.all(LightTheme.textPrimary),
-                  shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                  ),
-                ),
-                onPressed: _createProfile,
-                child: Center(
-                  child: Text('Utwórz profil'),
-                ),
-              ),
-            if (nickname != null && !isEditing) 
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: LightTheme.primary,
-                ).copyWith(
-                  foregroundColor: MaterialStateProperty.all(LightTheme.textPrimary),
-                  shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                  ),
-                ),
-                onPressed: _createProfile,
-                child: Center(
-                  child: Text('Edytuj profil'),
-                ),
-              ),
-            if (isEditing && nickname != null)
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: LightTheme.primary,
-                ).copyWith(
-                  foregroundColor: MaterialStateProperty.all(LightTheme.textPrimary),
-                  shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                  ),
-                ),
-                onPressed: _changeProfileSettings,
-                child: Center(
-                  child: Text('Zapisz zmiany'),
-                ),
-              ),
-          ],
+
+        ProfileActionButtons(
+          nickname: nickname,
+          isEditing: isEditing,
+          onCreate: _createProfile,
+          onEdit: _createProfile,
+          onSave: _changeProfileSettings,
         ),
 
         SizedBox(height: 20),
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (nickname != null)
-               ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: LightTheme.danger).copyWith(
-                foregroundColor: MaterialStateProperty.all(LightTheme.textPrimary),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
-              ),
-              onPressed: _isDeleting ? null : _deleteProfile,
-              child: _isDeleting
-                  ? SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: LightTheme.textPrimary),
-            )
-                 : Text('Usuń profil'),
-            ),
-            SizedBox(width: 10),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: LightTheme.danger,
-              ).copyWith(
-                foregroundColor: MaterialStateProperty.all(LightTheme.secondary),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                ),
-              ),
-              onPressed: _isDeletingAccount ? null : _deleteAccount,
-              child: _isDeletingAccount
-                  ? SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: LightTheme.textPrimary,
-                      ),
-                    )
-                  : Text('Usuń konto'),
-            ),
-          ],
-        ),
-        ],
-      ),
+        ProfileAccountButtons(
+            hasProfile: nickname != null,
+            isDeletingProfile: _isDeleting,
+            onDeleteProfile: _deleteProfile,
+            isDeletingAccount: _isDeletingAccount,
+            onDeleteAccount: _deleteAccount,
+          ),
+            ],
+           ),
           ),
         ),
       ]
     ),
   );
-}
+ }
 }

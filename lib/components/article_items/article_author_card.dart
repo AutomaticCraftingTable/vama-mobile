@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vama_mobile/api/api_service.dart';
+import 'package:vama_mobile/components/%D1%81ustom_snack_bar.dart';
 import 'package:vama_mobile/components/buttons/custom_buttons.dart';
-import 'package:vama_mobile/components/auth_provider.dart';
+import 'package:vama_mobile/provider/auth_provider.dart';
 import 'package:vama_mobile/theme/light_theme.dart';
 
 class ArticleAuthorCard extends StatefulWidget {
@@ -31,41 +32,42 @@ class _ArticleAuthorCardState extends State<ArticleAuthorCard> {
   }
 
   Future<void> toggleSubscription() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+  final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    if (!authProvider.isLoggedIn) {
-      Navigator.pushNamed(context, '/login');
-      return;
-    }
-
-    try {
-      if (isSubscribed) {
-        final response = await ApiService().unsubscribeFromProfile(widget.articleId);
-        if (response.statusCode == 200) {
-          setState(() => isSubscribed = false);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Odsubskrybowano!')),
-          );
-        } else {
-          throw Exception('Failed to unsubscribe');
-        }
-      } else {
-        final response = await ApiService().subscribeToProfil(widget.articleId);
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          setState(() => isSubscribed = true);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Zasubskrybowano!')),
-          );
-        } else {
-          throw Exception('Failed to subscribe');
-        }
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(isSubscribed ? 'Błąd przy odsubskrypcji' : 'Błąd przy subskrypcji')),
-      );
-    }
+  if (!authProvider.isLoggedIn) {
+    Navigator.pushNamed(context, '/login');
+    return;
   }
+
+  if (!authProvider.hasProfile) {
+    Navigator.pushNamed(context, '/settings');
+    return;
+  }
+
+  try {
+    if (isSubscribed) {
+      final response = await ApiService().unsubscribeFromProfile(widget.articleId);
+      if (response.statusCode == 200) {
+        setState(() => isSubscribed = false);
+        showCustomSnackBar(context, 'Odsubskrybowano!');
+      } else {
+        throw Exception('Failed to unsubscribe');
+      }
+    } else {
+      final response = await ApiService().subscribeToProfil(widget.articleId);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        setState(() => isSubscribed = true);
+        showCustomSnackBar(context, 'Zasubskrybowano!');
+      } else {
+        throw Exception('Failed to subscribe');
+      }
+    }
+  } catch (e) {
+    showCustomSnackBar(context, isSubscribed ? 'Błąd przy odsubskrypcji' : 'Błąd przy subskrypcji');
+  }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +109,7 @@ class _ArticleAuthorCardState extends State<ArticleAuthorCard> {
           ),
         ),
         Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             SecondaryButton(
               onPressed: toggleSubscription,
@@ -123,19 +125,27 @@ class _ArticleAuthorCardState extends State<ArticleAuthorCard> {
             PopupMenuButton<String>(
               icon: const Icon(Icons.more_vert),
               onSelected: (value) async {
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+                if (!authProvider.isLoggedIn) {
+                  Navigator.pushNamed(context, '/login');
+                  return;
+                }
+
+                if (!authProvider.hasProfile) {
+                  Navigator.pushNamed(context, '/settings');
+                  return;
+                }
+
                 if (value == 'report') {
                   try {
                     await ApiService().reportArticle(
                       widget.articleId,
                       'Zgłoszenie artykułu',
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Article reported successfully')),
-                    );
+                    showCustomSnackBar(context, 'Artykul został zgłoszony');
                   } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Failed to report article')),
-                    );
+                    showCustomSnackBar(context, 'Failed to report article');
                   }
                 }
               },
@@ -145,7 +155,7 @@ class _ArticleAuthorCardState extends State<ArticleAuthorCard> {
                   child: Text('Zgłoś artykuł'),
                 ),
               ],
-            ),
+            )
           ],
         ),
       ],

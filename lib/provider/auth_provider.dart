@@ -13,6 +13,7 @@ class AuthProvider with ChangeNotifier {
 
   String? get nickname => _nickname;
   bool get isLoggedIn => _isLoggedIn;
+  bool hasProfile = false;
   
 
   Future<bool> register(String nickname, String password) async {
@@ -81,4 +82,10 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 }
+
+ void setHasProfile(bool value) {
+    hasProfile = value;
+    notifyListeners();
+  }
+  
 }

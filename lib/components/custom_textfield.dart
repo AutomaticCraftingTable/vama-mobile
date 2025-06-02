@@ -34,37 +34,42 @@ class TextFieldState extends State<CustomTextField> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-      child: TextField(
-        controller: widget.controller,
-        obscureText: isPasswordHidden,
-        decoration: InputDecoration(
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: LightTheme.borderEnabled),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: LightTheme.borderFocused),
-          ),
-          fillColor: LightTheme.secondary,
-          filled: true,
-          hintText: widget.hintText,
-          hintStyle: TextStyle(color: LightTheme.textSecondaryLight),
-
-          suffixIcon: widget.isPassword
-              ? IconButton(
-                  icon: Icon(
-                    isPasswordHidden ? Icons.visibility_off : Icons.visibility,
-                    color: LightTheme.textSecondaryLight,
-                  ),
-                  onPressed: _toggleVisibility,
-                )
-              : null,
+Widget build(BuildContext context) {
+  return SizedBox(
+    width: double.infinity,
+    height: 50,
+    child: TextField(
+      controller: widget.controller,
+      obscureText: isPasswordHidden,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: LightTheme.secondary,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(0),
+          borderSide: const BorderSide(color: LightTheme.borderEnabled),
         ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(0),
+          borderSide: const BorderSide(color: LightTheme.borderFocused),
+        ),
+
+        hintText: widget.hintText,
+        hintStyle: TextStyle(color: LightTheme.textSecondaryLight),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+
+        suffixIcon: widget.isPassword
+            ? IconButton(
+                icon: Icon(
+                  isPasswordHidden ? Icons.visibility_off : Icons.visibility,
+                  color: LightTheme.textSecondaryLight,
+                ),
+                onPressed: _toggleVisibility,
+              )
+            : null,
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 

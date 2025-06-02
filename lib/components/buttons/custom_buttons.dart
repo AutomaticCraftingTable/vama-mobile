@@ -31,10 +31,12 @@ class SecondaryButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: LightTheme.secondary,
         foregroundColor: LightTheme.text,
+         elevation: 0,                  
+        shadowColor: Colors.transparent,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),  
         textStyle: const TextStyle(fontWeight: FontWeight.bold),
         shape: RoundedRectangleBorder( 
-          borderRadius: BorderRadius.circular(8),  
+          borderRadius: BorderRadius.circular(4),  
         ),
       ),
       onPressed: onPressed,

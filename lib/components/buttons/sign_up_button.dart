@@ -12,17 +12,18 @@ class SignUpButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(25),
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
         margin:  const EdgeInsets.symmetric(horizontal: 25) ,
         decoration: BoxDecoration(
             color: LightTheme.primary,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.zero,
         ),
         child: const Center(
           child: Text(
               "Zarejestruj się",
                style: TextStyle(
-                   color: LightTheme.textWhiteLight,
+                   color: LightTheme.textPrimary,
                        fontWeight: FontWeight.bold,
                         fontSize: 16,
                ),
