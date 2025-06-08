@@ -3,8 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:vama_mobile/api/api_service.dart';
 import 'package:vama_mobile/components/%D1%81ustom_snack_bar.dart';
 import 'package:vama_mobile/provider/auth_provider.dart';
+import 'package:vama_mobile/components/%D1%81ustom_snack_bar.dart';
+import 'package:vama_mobile/provider/auth_provider.dart';
 import 'package:vama_mobile/components/buttons/custom_buttons.dart';
 import 'package:vama_mobile/components/headers/header.dart';
+import 'package:vama_mobile/models/userProfileModel.dart';
+import 'package:vama_mobile/pages/article_detail_page.dart';
 import 'package:vama_mobile/models/userProfileModel.dart';
 import 'package:vama_mobile/pages/article_detail_page.dart';
 import 'package:vama_mobile/theme/light_theme.dart';
@@ -46,11 +50,24 @@ class _UserProfilePageState extends State<UserProfilePage> {
       return;
     }
 
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+
+    if (!auth.isLoggedIn) {
+      Navigator.pushNamed(context, '/login');
+      return;
+    }
+
+    if (!auth.hasProfile) {
+      Navigator.pushNamed(context, '/settings');
+      return;
+    }
+
     try {
       if (isSubscribed) {
         final response = await ApiService().unsubscribeFromProfile(widget.userId);
         if (response.statusCode == 200) {
           setState(() => isSubscribed = false);
+          showCustomSnackBar(context, 'Odsubskrybowano!');
           showCustomSnackBar(context, 'Odsubskrybowano!');
         } else {
           throw Exception('Failed to unsubscribe');
@@ -59,6 +76,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         final response = await ApiService().subscribeToProfil(widget.userId);
         if (response.statusCode == 200 || response.statusCode == 201) {
           setState(() => isSubscribed = true);
+          showCustomSnackBar(context, 'Zasubskrybowano!');
           showCustomSnackBar(context, 'Zasubskrybowano!');
         } else {
           throw Exception('Failed to subscribe');
@@ -112,11 +130,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
           final profile = snapshot.data!;
           return SingleChildScrollView(
             padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Header(),
+                const SizedBox(height: 16),
                 const SizedBox(height: 16),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,6 +211,18 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 return;
                               }
 
+                              final auth = Provider.of<AuthProvider>(context, listen: false);
+
+                              if (!auth.isLoggedIn) {
+                                Navigator.pushNamed(context, '/login');
+                                return;
+                              }
+
+                              if (!auth.hasProfile) {
+                                Navigator.pushNamed(context, '/settings');
+                                return;
+                              }
+
                               if (value == 'report') {
                                 try {
                                   await ApiService().reportProfile(
@@ -197,11 +230,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                     'Zgłoszenie profilu',
                                   );
                                   showCustomSnackBar(context, 'Profil został zgłoszony');
+                                  showCustomSnackBar(context, 'Profil został zgłoszony');
                                 } catch (e) {
+                                  showCustomSnackBar(context, 'Nie udało się zgłosić Profilu');
                                   showCustomSnackBar(context, 'Nie udało się zgłosić Profilu');
                                 }
                               }
                             },
+                            itemBuilder: (BuildContext context) => [
                             itemBuilder: (BuildContext context) => [
                               const PopupMenuItem<String>(
                                 value: 'report',
