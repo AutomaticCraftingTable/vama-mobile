@@ -10,12 +10,16 @@ class ArticleAuthorCard extends StatefulWidget {
   final Map<String?, dynamic> article;
   final int articleId;
   final VoidCallback onTapProfile;
+  final bool hideSubscribe;
+  final void Function(String)? onNoteAdded;
 
   const ArticleAuthorCard({
     super.key,
     required this.article,
     required this.articleId,
     required this.onTapProfile,
+    this.hideSubscribe = false,
+    this.onNoteAdded,
   });
 
   @override
@@ -24,7 +28,58 @@ class ArticleAuthorCard extends StatefulWidget {
 
 class _ArticleAuthorCardState extends State<ArticleAuthorCard> {
   bool isSubscribed = false;
+  String? _note;
 
+void _showNoteDialog() async {
+  final TextEditingController noteController = TextEditingController();
+
+  final result = await showDialog<String>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Dodaj notatkę'),
+        content: TextField(
+          controller: noteController,
+          maxLines: 3,
+          decoration: const InputDecoration(
+            hintText: 'Wpisz swoją notatkę tutaj...',
+            border: InputBorder.none,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Anuluj', style: TextStyle(color: LightTheme.primary)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, noteController.text),
+            child: const Text('Zapisz', style: TextStyle(color: LightTheme.danger)),
+          ),
+        ],
+      );
+    },
+  );
+
+  if (result != null && result.trim().isNotEmpty) {
+    final noteText = result.trim();
+
+    try {
+      await ApiService().addNote(widget.articleId, noteText);
+
+      setState(() {
+        _note = noteText;
+      });
+
+      showCustomSnackBar(context, 'Notatka została dodana');
+
+      if (widget.onNoteAdded != null) {
+        widget.onNoteAdded!(_note!);
+      }
+    } catch (e) {
+      showCustomSnackBar(context, 'Nie udało się dodać notatki');
+    }
+  }
+}
   @override
   void initState() {
     super.initState();
@@ -108,21 +163,22 @@ class _ArticleAuthorCardState extends State<ArticleAuthorCard> {
             ],
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            SecondaryButton(
-              onPressed: toggleSubscription,
-              child: Text(
-                isSubscribed ? "Odsubskrybuj" : "Zasubskrybuj",
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: LightTheme.text,
+        if (!widget.hideSubscribe)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SecondaryButton(
+                onPressed: toggleSubscription,
+                child: Text(
+                  isSubscribed ? "Odsubskrybuj" : "Zasubskrybuj",
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: LightTheme.text,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 4),
-            PopupMenuButton<String>(
+              const SizedBox(width: 4),
+             PopupMenuButton<String>(
               icon: const Icon(Icons.more_vert),
               onSelected: (value) async {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -143,19 +199,34 @@ class _ArticleAuthorCardState extends State<ArticleAuthorCard> {
                       widget.articleId,
                       'Zgłoszenie artykułu',
                     );
-                    showCustomSnackBar(context, 'Artykul został zgłoszony');
+                    showCustomSnackBar(context, 'Artykuł został zgłoszony');
                   } catch (e) {
-                    showCustomSnackBar(context, 'Failed to report article');
+                    showCustomSnackBar(context, 'Nie udało się zgłosić artykułu');
                   }
+                } else if (value == 'note') {
+                  _showNoteDialog();
                 }
               },
-              itemBuilder: (BuildContext context) => [
-                const PopupMenuItem<String>(
-                  value: 'report',
-                  child: Text('Zgłoś artykuł'),
-                ),
-              ],
-            )
+              itemBuilder: (BuildContext context) {
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                List<PopupMenuEntry<String>> items = [
+                  const PopupMenuItem<String>(
+                    value: 'report',
+                    child: Text('Zgłoś artykuł'),
+                  ),
+                ];
+
+                if (authProvider.isModerator) {
+                  items.add(
+                    const PopupMenuItem<String>(
+                      value: 'note',
+                      child: Text('Dodać notatkę'),
+                    ),
+                  );
+                }
+                return items;
+              },
+            ),
           ],
         ),
       ],

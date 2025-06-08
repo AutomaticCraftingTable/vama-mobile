@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vama_mobile/components/bottom_panel/main_logged_in_layout.dart';
 import 'package:vama_mobile/theme/light_theme.dart';
 import 'package:vama_mobile/provider/auth_provider.dart';
 
@@ -29,7 +30,30 @@ class _UserHeaderState extends State<UserHeader> {
             IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => Navigator.pop(context),
+              padding: EdgeInsets.zero, 
+              constraints: const BoxConstraints(),
             ),
+
+            if (!_isSearching)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                  builder: (context) => const MainLoggedInLayout(),
+                    ),
+                  (Route<dynamic> route) => false, 
+                  );
+                },
+                child: Image.asset(
+                  'lib/assets/logo.png',
+                  height: 30,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+
 
           const Spacer(),
 
@@ -77,11 +101,11 @@ class _UserHeaderState extends State<UserHeader> {
             icon: const Icon(Icons.person),
             onPressed: ()
                  {
-                Navigator.pushNamed(
-                  context,
-                  '/profile',
-                );
-              
+                Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/profile',
+              (Route<dynamic> route) => false,
+              );
             },
           ),
 

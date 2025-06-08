@@ -117,21 +117,6 @@ Future<void> unlikeArticle(int articleId) async {
     throw Exception('Failed to unlike article');
   }
 }
-
-Future<void> likeComment(int articleId) async {
-  final response = await dio.post('/api/article/$articleId/like');
-  if (response.statusCode != 200) {
-    throw Exception('Failed to like comment');
-  }
-}
-
-Future<void> unlikeComment(int articleId) async {
-  final response = await dio.delete('/api/article/$articleId/like');
-  if (response.statusCode != 200) {
-    throw Exception('Failed to unlike comment');
-  }
-}
-
 Future<void> addCommentToArticle(int articleId, String content) async {
   final response = await dio.post(
     '/api/article/$articleId/comment',
@@ -320,5 +305,58 @@ Future<Map<String, dynamic>> fetchOwnProfile() async {
     rethrow;
   }
 }
-  
+ Future<Map<String, dynamic>> createArticle({
+    required String title,
+    required String body,
+    required List<String> tags,
+  }) async {
+    try {
+      final data = {
+        'title': title,
+        'body': body,
+        'tags': tags,
+      };
+
+      final response = await dio.post(
+        '/api/article',
+        data: data,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw Exception("Failed to create article: ${response.statusCode}");
+      }
+    } catch (e) {
+      if (kDebugMode) print("Error in createArticle: $e");
+      rethrow;
+    }
+  }
+  Future<Response> deleteArticle(int articleId) async {
+  final response = await dio.delete('/api/article/$articleId');
+  return response;
+}
+Future<void> addNote(int articleId, String content) async {
+  try {
+    final response = await dio.post(
+      '/api/article/$articleId/note',
+      data: {
+        'content': content,
+      },
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print("Note added successfully");
+    } else {
+      throw Exception("Failed to add note");
+    }
+  } catch (e) {
+    print("Error adding note: $e");
+    rethrow;
+  }
+}
+Future<Response> deleteNote(int articleId) async {
+  final response = await dio.delete('/api/article/$articleId/note');
+  return response;
+}
 }
