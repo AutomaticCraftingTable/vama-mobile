@@ -39,7 +39,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
   Future<void> _removeFromFavorites(int articleId) async {
     try {
-      await ApiService().unlikeComment(articleId);
+      await ApiService().unlikeArticle(articleId);
       setState(() {
         _articles.removeWhere((article) => article['id'] == articleId);
       });
@@ -74,7 +74,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                   return url != null &&
                                       (url.startsWith('http://') || url.startsWith('https://'));
                                 }
-
                                 return InkWell(
                                   onTap: () {
                                     Navigator.push(
@@ -145,8 +144,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                             ),
                                           ),
                                           IconButton(
-                                            icon: const Icon(Icons.close, color: LightTheme.textDimmed),
-                                            onPressed: () => _removeFromFavorites(article['id']),
+                                              icon: const Icon(Icons.close, color: LightTheme.primary),
+                                              onPressed: () => _removeFromFavorites(article['id']),
                                           ),
                                         ],
                                       ),

@@ -30,7 +30,7 @@ class ArticleActionBar extends StatelessWidget {
               onPressed: onComment,
               elevation: 2, 
               backgroundColor: LightTheme.textPrimary,
-              splashColor: LightTheme.primary,
+              splashColor: LightTheme.textPrimary,
               highlightElevation: 0,
               child: Icon(Icons.comment, color: LightTheme.text),
             ),

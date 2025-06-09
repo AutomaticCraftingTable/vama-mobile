@@ -47,10 +47,12 @@ class ContentPage extends StatelessWidget {
                         id: post['id'],
                         author: post['author']['nickname'],
                         thumbnail: post['thumbnail'],
-                        tags: List<String>.from(post['tags'].split('#')),
+                        tags: (post['tags'] as String)
+                        .split('#')
+                        .where((tag) => tag.isNotEmpty)
+                        .toList(),
                         title: post['title'],
                         followers: post['author']['followers'],
-                        
                       );
                     },
                   );

@@ -5,8 +5,12 @@ class AuthProvider with ChangeNotifier {
   bool _isLoggedIn = false;
   String? _registeredNickname;
   String? _registeredPassword;
-
+  
   String? _nickname;
+
+  bool _isModerator = false;
+  bool get isModerator => _isModerator;
+
 
   int? _Id;
   int? get Id => _Id;
@@ -51,9 +55,17 @@ class AuthProvider with ChangeNotifier {
       _isLoggedIn = true;
       _nickname = nickname;
 
+      if (nickname.toLowerCase().contains("mod")) {
+      _isModerator = true;
+      } else {
+      _isModerator = false;
+    }
+
       final idValue = response.data['user']['id'];
       print("ID value: $idValue");
       _Id = idValue is int ? idValue : int.parse(idValue);
+      
+  
 
       print("Login successful, accountId: $_Id");
       notifyListeners();
@@ -87,5 +99,8 @@ class AuthProvider with ChangeNotifier {
     hasProfile = value;
     notifyListeners();
   }
-  
+  void setModerator(bool value) {
+    _isModerator = value;
+    notifyListeners();
+  }
 }
