@@ -12,15 +12,11 @@ class UserHeader extends StatefulWidget {
 }
 
 class _UserHeaderState extends State<UserHeader> {
-  bool _isSearching = false;
-  final TextEditingController _searchController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     final canGoBack = Navigator.canPop(context);
     final authProvider = Provider.of<AuthProvider>(context);
     final Id = authProvider.Id;
-
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -33,8 +29,6 @@ class _UserHeaderState extends State<UserHeader> {
               padding: EdgeInsets.zero, 
               constraints: const BoxConstraints(),
             ),
-
-            if (!_isSearching)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: GestureDetector(
@@ -53,61 +47,22 @@ class _UserHeaderState extends State<UserHeader> {
                 ),
               ),
             ),
-
-
           const Spacer(),
-
-          if (_isSearching)
-            Expanded(
-              flex: 5,
-              child: TextField(
-                controller: _searchController,
-                autofocus: true,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: LightTheme.buttonGrey,
-                  filled: true,
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      _searchController.clear();
-                      setState(() => _isSearching = false);
-                    },
-                  ),
-                ),
-                onSubmitted: (value) {
-                  print("Szukaj: $value"); 
-                },
-              ),
-            )
-          else
-            IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                setState(() => _isSearching = true);
-              },
-            ),
-
           IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: ()
-                 {
-                Navigator.pushNamedAndRemoveUntil(
-              context,
-              '/profile',
-              (Route<dynamic> route) => false,
+          icon: const Icon(Icons.person),
+          onPressed: () {
+            final auth = Provider.of<AuthProvider>(context, listen: false);
+            if (!auth.hasProfile) {
+              Navigator.pushNamed(context, '/settings');
+            } else {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/profile',
+                (Route<dynamic> route) => false,
               );
-            },
-          ),
+            }
+          },
+        ),
 
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),

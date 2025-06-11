@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vama_mobile/components/%D1%81ustom_snack_bar.dart';
+import 'package:vama_mobile/components/bottom_panel/main_logged_in_layout.dart';
 import 'package:vama_mobile/components/headers/header.dart';
 import 'package:vama_mobile/components/buttons/log_in_button.dart';
 import 'package:vama_mobile/components/custom_textfield.dart';
@@ -25,7 +26,12 @@ class LoginPage extends StatelessWidget {
     final success = await provider.login(usernameController.text, passwordController.text);
 
     if (success) {
-      Navigator.pop(context);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+          builder: (context) =>  MainLoggedInLayout(),
+          ),
+        (Route<dynamic> route) => false, 
+      );
     } else {
       showCustomSnackBar(context, "Nieprawidłowy login lub hasło", isError: true);
     }

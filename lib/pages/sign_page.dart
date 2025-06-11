@@ -17,6 +17,7 @@ class SignPage extends StatefulWidget {
 class _SignPageState extends State<SignPage> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  final passwordConfirmationController = TextEditingController();
   bool _isChecked = false;
 
   void signUser() async {
@@ -31,7 +32,7 @@ class _SignPageState extends State<SignPage> {
   }
 
   final provider = Provider.of<AuthProvider>(context, listen: false);
-  final success = await provider.register(usernameController.text, passwordController.text);
+  final success = await provider.register(usernameController.text, passwordController.text, passwordConfirmationController.text);
 
   if (success) {
     showCustomSnackBar(context, "Rejestracja zakończona sukcesem! Możesz się teraz zalogować.");
@@ -40,8 +41,6 @@ class _SignPageState extends State<SignPage> {
     showCustomSnackBar(context, "Użytkownik już zarejestrowany.", isError: true);
   }
 }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +77,7 @@ class _SignPageState extends State<SignPage> {
 
               CustomTextField(
                 controller: usernameController,
-                hintText: 'Nazwa użytkownika',
+                hintText: 'E-mail',
                 isPassword: false,
               ),
 
@@ -87,6 +86,12 @@ class _SignPageState extends State<SignPage> {
               CustomTextField(
                 controller: passwordController,
                 hintText: 'Hasło',
+                isPassword: true,
+              ),
+              
+              CustomTextField(
+                controller: passwordConfirmationController,
+                hintText: 'Potwierdź hasło',
                 isPassword: true,
               ),
 

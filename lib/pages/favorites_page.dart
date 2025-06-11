@@ -58,12 +58,16 @@ class _FavoritesPageState extends State<FavoritesPage> {
           children: [
             const Header(),
             Expanded(
-              child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : _error != null
-                      ? Center(child: Text('Błąd: $_error'))
-                      : _articles.isEmpty
-                          ? const Center(child: Text('Brak ulubionych artykułów.'))
+          child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : RefreshIndicator(
+                onRefresh: _loadFavorites,
+                child: _error != null
+                  ? ListView( 
+                      children: [Center(child: Text('Błąd: $_error'))],
+                    )
+                  : _articles.isEmpty
+                    ? ListView(children: [const Center(child: Text('Brak ulubionych artykułów.'))])
                           : ListView.builder(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               itemCount: _articles.length,
@@ -109,14 +113,17 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                         children: [
                                           isValidUrl(article['thumbnail'])
                                               ? ClipRRect(
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  child: Image.network(
-                                                    article['thumbnail'],
-                                                    width: 80,
-                                                    height: 80,
-                                                    fit: BoxFit.cover,
+                                                borderRadius: BorderRadius.circular(8),
+                                                child: Image.network(
+                                                  article['thumbnail'],
+                                                  width: 80, height: 80, fit: BoxFit.cover,
+                                                  errorBuilder: (_, __, ___) => Container(
+                                                    color: Colors.grey[300],
+                                                    width: 80, height: 80,
+                                                    child: const Icon(Icons.broken_image, color: LightTheme.textDimmed),
                                                   ),
-                                                )
+                                                ),
+                                              )
                                               : Container(
                                                   width: 80,
                                                   height: 80,
@@ -155,6 +162,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                               },
                             ),
             ),
+            )
           ],
         ),
       ),

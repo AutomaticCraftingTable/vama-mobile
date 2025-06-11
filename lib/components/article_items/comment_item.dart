@@ -8,14 +8,14 @@ class CommentItem extends StatelessWidget {
   final VoidCallback onTapProfile;
   final VoidCallback? onReport;
   final VoidCallback? onDelete;
-  final String currentUsername;
+ final String? nickname;
 
   const CommentItem({
     super.key,
     required this.comment,
     required this.isLiked,
     required this.onTapProfile,
-    required this.currentUsername,
+    required this.nickname,
     this.onReport,
     this.onDelete,
   });
@@ -25,8 +25,7 @@ class CommentItem extends StatelessWidget {
     final DateTime createdAt = DateTime.parse(comment['created_at']);
     final String timeAgo = timeago.format(createdAt);
     final int likes = comment['likes'] ?? 0;
-    final bool isOwnComment = comment['causer']['nickname'] == currentUsername;
-
+    final bool isOwnComment = comment['causer']['nickname'] == nickname;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: Row(
@@ -35,7 +34,12 @@ class CommentItem extends StatelessWidget {
           GestureDetector(
             onTap: onTapProfile,
             child: CircleAvatar(
-              backgroundImage: NetworkImage(comment['causer']['logo']),
+              backgroundImage: comment['causer']['logo'] != null
+                  ? NetworkImage(comment['causer']['logo'])
+                  : null,
+              child: comment['causer']['logo'] == null
+                  ? const Icon(Icons.person)
+                  : null,
               radius: 20,
             ),
           ),

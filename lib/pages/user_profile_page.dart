@@ -3,92 +3,82 @@ import 'package:provider/provider.dart';
 import 'package:vama_mobile/api/api_service.dart';
 import 'package:vama_mobile/components/%D1%81ustom_snack_bar.dart';
 import 'package:vama_mobile/provider/auth_provider.dart';
-import 'package:vama_mobile/components/%D1%81ustom_snack_bar.dart';
-import 'package:vama_mobile/provider/auth_provider.dart';
 import 'package:vama_mobile/components/buttons/custom_buttons.dart';
 import 'package:vama_mobile/components/headers/header.dart';
-import 'package:vama_mobile/models/userProfileModel.dart';
-import 'package:vama_mobile/pages/article_detail_page.dart';
 import 'package:vama_mobile/models/userProfileModel.dart';
 import 'package:vama_mobile/pages/article_detail_page.dart';
 import 'package:vama_mobile/theme/light_theme.dart';
 
 class UserProfilePage extends StatefulWidget {
-  final int userId;
+  final String nickname;
 
-  const UserProfilePage({Key? key, required this.userId}) : super(key: key);
+  const UserProfilePage({Key? key, required this.nickname}) : super(key: key);
 
   @override
   State<UserProfilePage> createState() => _UserProfilePageState();
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  late Future<UserProfile> _futureProfile;
+  Future<UserProfile>? _futureProfile;
   bool isSubscribed = false;
   bool isOwnProfile = false;
+  
+@override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_futureProfile == null) {
+      final auth = Provider.of<AuthProvider>(context, listen: false);
+      final isOwn = widget.nickname == auth.nickname;
+      isOwnProfile = isOwn;
 
-  @override
-  void initState() {
-    super.initState();
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-    isOwnProfile = widget.userId == auth.Id;
-    _futureProfile = isOwnProfile
-        ? ApiService().fetchOwnProfile().then((json) => UserProfile.fromJson(json))
-        : ApiService().fetchUserProfile(widget.userId).then((json) => UserProfile.fromJson(json));
+      _futureProfile = (isOwn
+        ? ApiService().fetchOwnProfile()
+        : ApiService().fetchUserProfile(widget.nickname)
+      ).then((json) => UserProfile.fromJson(json));
+    }
   }
 
-  Future<void> toggleSubscription() async {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
+Future<void> toggleSubscription() async {
+  final auth = Provider.of<AuthProvider>(context, listen: false);
 
-    if (!auth.isLoggedIn) {
-      Navigator.pushNamed(context, '/login');
-      return;
-    }
+  if (!auth.isLoggedIn) {
+    Navigator.pushNamed(context, '/login');
+    return;
+  }
 
-    if (!auth.hasProfile) {
-      Navigator.pushNamed(context, '/settings');
-      return;
-    }
+  if (!auth.hasProfile) {
+    Navigator.pushNamed(context, '/settings');
+    return;
+  }
 
-    final auth = Provider.of<AuthProvider>(context, listen: false);
+  try {
+    final profile = await _futureProfile; 
 
-    if (!auth.isLoggedIn) {
-      Navigator.pushNamed(context, '/login');
-      return;
-    }
-
-    if (!auth.hasProfile) {
-      Navigator.pushNamed(context, '/settings');
-      return;
-    }
-
-    try {
-      if (isSubscribed) {
-        final response = await ApiService().unsubscribeFromProfile(widget.userId);
-        if (response.statusCode == 200) {
-          setState(() => isSubscribed = false);
-          showCustomSnackBar(context, 'Odsubskrybowano!');
-          showCustomSnackBar(context, 'Odsubskrybowano!');
-        } else {
-          throw Exception('Failed to unsubscribe');
-        }
+    if (isSubscribed) {
+      final response = await ApiService().unsubscribeFromProfile(profile!.nickname);
+      if (response.statusCode == 200) {
+        setState(() => isSubscribed = false);
+        showCustomSnackBar(context, 'Odsubskrybowano!');
       } else {
-        final response = await ApiService().subscribeToProfil(widget.userId);
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          setState(() => isSubscribed = true);
-          showCustomSnackBar(context, 'Zasubskrybowano!');
-          showCustomSnackBar(context, 'Zasubskrybowano!');
-        } else {
-          throw Exception('Failed to subscribe');
-        }
+        throw Exception('Failed to unsubscribe'); 
       }
-    } catch (e) {
-      showCustomSnackBar(
-        context,
-        isSubscribed ? 'Błąd przy odsubskrypcji' : 'Błąd przy subskrypcji',
-      );
+    } else {
+      final response = await ApiService().subscribeToProfil(profile!.nickname);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        setState(() => isSubscribed = true);
+        showCustomSnackBar(context, 'Zasubskrybowano!');
+      } else {
+        throw Exception('Failed to subscribe');
+      }
     }
+  } catch (e) {
+    showCustomSnackBar(
+      context,
+      isSubscribed ? 'Błąd przy odsubskrypcji' : 'Błąd przy subskrypcji',
+    );
   }
+}
+
 
   bool isValidUrl(String? url) {
     return url != null && (url.startsWith('http://') || url.startsWith('https://'));
@@ -101,7 +91,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       setState(() {
         _futureProfile = isOwnProfile
             ? ApiService().fetchOwnProfile().then((json) => UserProfile.fromJson(json))
-            : ApiService().fetchUserProfile(widget.userId).then((json) => UserProfile.fromJson(json));
+            : ApiService().fetchUserProfile(widget.nickname).then((json) => UserProfile.fromJson(json));
       });
       showCustomSnackBar(context, 'Artykuł usunięty');
     } else {
@@ -112,10 +102,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 }
 
-
-
   @override
   Widget build(BuildContext context) {
+     final auth = Provider.of<AuthProvider>(context);
+    final isOwnProfile = widget.nickname == auth.nickname;
+
+    if (_futureProfile == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       body: FutureBuilder<UserProfile>(
         future: _futureProfile,
@@ -130,14 +126,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
           final profile = snapshot.data!;
           return SingleChildScrollView(
             padding: const EdgeInsets.all(15),
-            padding: const EdgeInsets.all(15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 5),
-                const SizedBox(height: 5),
                 Header(),
-                const SizedBox(height: 16),
                 const SizedBox(height: 16),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,8 +204,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 return;
                               }
 
-                              final auth = Provider.of<AuthProvider>(context, listen: false);
-
                               if (!auth.isLoggedIn) {
                                 Navigator.pushNamed(context, '/login');
                                 return;
@@ -226,18 +217,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               if (value == 'report') {
                                 try {
                                   await ApiService().reportProfile(
-                                    widget.userId,
+                                    profile.nickname,
                                     'Zgłoszenie profilu',
                                   );
                                   showCustomSnackBar(context, 'Profil został zgłoszony');
-                                  showCustomSnackBar(context, 'Profil został zgłoszony');
                                 } catch (e) {
-                                  showCustomSnackBar(context, 'Nie udało się zgłosić Profilu');
-                                  showCustomSnackBar(context, 'Nie udało się zgłosić Profilu');
+                                  showCustomSnackBar(context, 'Nie udało się zgłosić Profilu');                               
                                 }
                               }
                             },
-                            itemBuilder: (BuildContext context) => [
                             itemBuilder: (BuildContext context) => [
                               const PopupMenuItem<String>(
                                 value: 'report',

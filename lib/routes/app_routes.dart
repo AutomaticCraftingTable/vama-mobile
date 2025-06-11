@@ -29,15 +29,14 @@ class AppRoutes {
         case '/settings':
         return fadeTransition(SettingsPage());
         case '/profile':
-        final maybeId = settings.arguments as int?;
+        final maybeNickname = settings.arguments as String?;
         return MaterialPageRoute(
           builder: (context) {
             final auth = Provider.of<AuthProvider>(context, listen: false);
-            final profileId = maybeId ?? auth.Id!;
-            return UserProfilePage(userId: profileId);
+            final profileUsername = maybeNickname ?? auth.nickname!;
+            return UserProfilePage(nickname: profileUsername);
           },
         );
-
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

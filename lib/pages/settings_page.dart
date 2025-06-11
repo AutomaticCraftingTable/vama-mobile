@@ -34,6 +34,27 @@ class _SettingsPageState extends State<SettingsPage> {
 
   bool _isLoading = false;
 
+  @override
+void initState() {
+  super.initState();
+  _loadProfile();
+}
+
+Future<void> _loadProfile() async {
+  setState(() => _isLoading = true);
+  try {
+    final Map<String, dynamic> profile = await ApiService().fetchOwnProfile();
+    setState(() {
+      nickname    = profile['nickname']    as String?;
+      description = profile['description'] as String?;
+   
+    });
+  } catch (e) {
+    showCustomSnackBar(context, 'Nie udało się załadować profilu');
+  } finally {
+    setState(() => _isLoading = false);
+  }
+}
   void _createProfile() async {
   if (!isEditing && nickname == null) {
     setState(() => isEditing = true);
@@ -203,22 +224,6 @@ Widget build(BuildContext context) {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
-          Text('Aplikacja',style: TextStyle(fontWeight: FontWeight.bold,color: LightTheme.textDimmed)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Tryb ciemny',style: TextStyle(fontWeight: FontWeight.bold,color: LightTheme.text)),
-              Switch(
-                value: isDarkMode,
-                onChanged: (val) => setState(() => isDarkMode = val),
-                activeColor: LightTheme.secondary,
-                activeTrackColor: LightTheme.primary,
-                inactiveThumbColor: LightTheme.primary,
-                inactiveTrackColor: LightTheme.secondary,
-              ),
-            ],
-          ),
           SizedBox(height: 20),
 
           if (isEditing) ...[
@@ -356,12 +361,18 @@ Widget build(BuildContext context) {
           ],
 
         ProfileActionButtons(
-          nickname: nickname,
-          isEditing: isEditing,
-          onCreate: _createProfile,
-          onEdit: _createProfile,
-          onSave: _changeProfileSettings,
-        ),
+        nickname: nickname,
+        isEditing: isEditing,
+        onCreate: _createProfile,
+        onEdit: () {
+        setState(() {
+          isEditing = true;
+          nicknameController.text = nickname ?? '';
+          descriptionController.text = description ?? '';
+        });
+      },
+      onSave: _changeProfileSettings,
+      ),
 
         SizedBox(height: 20),
 
