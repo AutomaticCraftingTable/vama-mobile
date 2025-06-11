@@ -14,6 +14,7 @@ class PostCard extends StatelessWidget {
   final List<dynamic> comments;
   final String logo;
   final int accountId;
+  final String nickname;
 
   const PostCard({
     super.key,
@@ -28,6 +29,7 @@ class PostCard extends StatelessWidget {
     required this.title, 
     required this.followers,
     required this.accountId,
+    required this.nickname,
   });
 
   @override
@@ -38,7 +40,7 @@ class PostCard extends StatelessWidget {
       Navigator.pushNamed(
       context,
       '/profile',
-      arguments: accountId,
+      arguments: nickname,
     );
     }
 
@@ -81,8 +83,6 @@ class PostCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  
-
                   GestureDetector(
                     onTap: goToUserProfile,
                     child:  CircleAvatar(

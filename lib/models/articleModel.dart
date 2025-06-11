@@ -1,5 +1,4 @@
 
-// models/author_model.dart
 class AuthorModel {
   final int id;
   final String nickname;
@@ -31,7 +30,7 @@ class AuthorModel {
 
 class CommentModel {
   final int id;
-  final String causer;
+  final AuthorModel causer;
   final int articleId;
   final String content;
   final String logo;
@@ -87,10 +86,6 @@ class CommentModel {
         'likes': likes,
       };
 }
-
-
-
-
 class ArticleDetail {
   final int id;
   final String title;
@@ -98,7 +93,7 @@ class ArticleDetail {
   final AuthorModel author;
   final int followersCount;
   final bool isSubscribed;
-  final int likes;
+  final List<LikeModel> likes;
   final DateTime createdAt;
   final List<CommentModel> comments;
 
@@ -115,6 +110,7 @@ class ArticleDetail {
   });
 
   factory ArticleDetail.fromJson(Map<String, dynamic> json) {
+    
     final authorJson = json['author'] as Map<String, dynamic>? ?? {};
     final author = AuthorModel.fromJson(authorJson);
 
@@ -133,7 +129,6 @@ class ArticleDetail {
       }
     }
 
-    // Safely parse isSubscribed
     bool subscribed = false;
     if (json.containsKey('isSubscribed') && json['isSubscribed'] != null) {
       final s = json['isSubscribed'];
@@ -154,8 +149,8 @@ class ArticleDetail {
     );
   }
 
-  ArticleDetail copyWith({
-    int? likes,
+    ArticleDetail copyWith({
+    List<LikeModel>? likes,
     List<CommentModel>? comments,
     int? followersCount,
     bool? isSubscribed,
@@ -180,8 +175,45 @@ class ArticleDetail {
         'author': author.toJson(),
         'followers': followersCount,
         'isSubscribed': isSubscribed,
-        'likes': likes,
+        'likes': likes.map((l) => l.toJson()).toList(),
         'created_at': createdAt.toIso8601String(),
         'comments': comments.map((c) => c.toJson()).toList(),
       };
 }
+class LikeModel {
+  final int id;
+  final int causer;
+  final int articleId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  LikeModel({
+    required this.id,
+    required this.causer,
+    required this.articleId,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory LikeModel.fromJson(Map<String, dynamic> json) {
+    return LikeModel(
+      id: json['id'] is int ? json['id'] : int.parse(json['id'].toString()),
+      causer: json['causer'] is int ? json['causer'] : int.parse(json['causer'].toString()),
+      articleId: json['article_id'] is int
+          ? json['article_id']
+          : int.parse(json['article_id'].toString()),
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'causer': causer,
+        'article_id': articleId,
+        'created_at': createdAt.toIso8601String(),
+        'updated_at': updatedAt.toIso8601String(),
+      };
+}
+
+

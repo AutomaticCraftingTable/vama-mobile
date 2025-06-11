@@ -12,9 +12,11 @@ class ArticleAuthorCard extends StatefulWidget {
   final VoidCallback onTapProfile;
   final bool hideSubscribe;
   final void Function(String)? onNoteAdded;
+  final String nickname;
 
   const ArticleAuthorCard({
     super.key,
+    required this.nickname,
     required this.article,
     required this.articleId,
     required this.onTapProfile,
@@ -28,65 +30,13 @@ class ArticleAuthorCard extends StatefulWidget {
 
 class _ArticleAuthorCardState extends State<ArticleAuthorCard> {
   bool isSubscribed = false;
-  String? _note;
-
-void _showNoteDialog() async {
-  final TextEditingController noteController = TextEditingController();
-
-  final result = await showDialog<String>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('Dodaj notatkę'),
-        content: TextField(
-          controller: noteController,
-          maxLines: 3,
-          decoration: const InputDecoration(
-            hintText: 'Wpisz swoją notatkę tutaj...',
-            border: InputBorder.none,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Anuluj', style: TextStyle(color: LightTheme.primary)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, noteController.text),
-            child: const Text('Zapisz', style: TextStyle(color: LightTheme.danger)),
-          ),
-        ],
-      );
-    },
-  );
-
-  if (result != null && result.trim().isNotEmpty) {
-    final noteText = result.trim();
-
-    try {
-      await ApiService().addNote(widget.articleId, noteText);
-
-      setState(() {
-        _note = noteText;
-      });
-
-      showCustomSnackBar(context, 'Notatka została dodana');
-
-      if (widget.onNoteAdded != null) {
-        widget.onNoteAdded!(_note!);
-      }
-    } catch (e) {
-      showCustomSnackBar(context, 'Nie udało się dodać notatki');
-    }
-  }
-}
   @override
   void initState() {
     super.initState();
     isSubscribed = widget.article['isSubscribed'] ?? false;
   }
 
-  Future<void> toggleSubscription() async {
+ Future<void> toggleSubscription() async {
   final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
   if (!authProvider.isLoggedIn) {
@@ -101,7 +51,7 @@ void _showNoteDialog() async {
 
   try {
     if (isSubscribed) {
-      final response = await ApiService().unsubscribeFromProfile(widget.articleId);
+      final response = await ApiService().unsubscribeFromProfile(widget.nickname);
       if (response.statusCode == 200) {
         setState(() => isSubscribed = false);
         showCustomSnackBar(context, 'Odsubskrybowano!');
@@ -109,7 +59,7 @@ void _showNoteDialog() async {
         throw Exception('Failed to unsubscribe');
       }
     } else {
-      final response = await ApiService().subscribeToProfil(widget.articleId);
+      final response = await ApiService().subscribeToProfil(widget.nickname);
       if (response.statusCode == 200 || response.statusCode == 201) {
         setState(() => isSubscribed = true);
         showCustomSnackBar(context, 'Zasubskrybowano!');
@@ -118,12 +68,10 @@ void _showNoteDialog() async {
       }
     }
   } catch (e) {
-    showCustomSnackBar(context, isSubscribed ? 'Błąd przy odsubskrypcji' : 'Błąd przy subskrypcji');
+    showCustomSnackBar(
+        context, isSubscribed ? 'Błąd przy odsubskrypcji' : 'Błąd przy subskrypcji');
   }
 }
-
-
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -154,7 +102,7 @@ void _showNoteDialog() async {
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
-                "${widget.article['followers']} followers",
+                "${widget.article['author']['followers']} followers",
                 style: const TextStyle(
                   fontSize: 10,
                   color: LightTheme.textDimmed,
@@ -204,7 +152,7 @@ void _showNoteDialog() async {
                     showCustomSnackBar(context, 'Nie udało się zgłosić artykułu');
                   }
                 } else if (value == 'note') {
-                  _showNoteDialog();
+                  
                 }
               },
               itemBuilder: (BuildContext context) {

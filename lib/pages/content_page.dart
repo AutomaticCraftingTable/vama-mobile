@@ -16,9 +16,7 @@ class ContentPage extends StatelessWidget {
             const Header(),
             Expanded(
               child: FutureBuilder<List<dynamic>>(
-
                 future: ApiService().fetchPosts(), 
-                
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -28,17 +26,28 @@ class ContentPage extends StatelessWidget {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   }
 
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  final articles = snapshot.data;
+                  if (articles == null || articles.isEmpty) {
                     return const Center(child: Text('No posts available'));
                   }
 
-                  final posts = snapshot.data!;
-
                   return ListView.builder(
-                    itemCount: posts.length,
+                    itemCount: articles.length,
                     itemBuilder: (context, index) {
-                      final post = posts[index];
+                      final post = articles[index] as Map<String, dynamic>;
+
+                      final String thumbnailUrl = (post['thumbnail'] as String?)?.isNotEmpty == true
+                          ? post['thumbnail']
+                          : 'https://via.placeholder.com/150';
+                          
+                      final List<String> tags = (post['tags'] as String)
+                          .split(',')
+                          .map((t) => t.trim())
+                          .where((t) => t.isNotEmpty)
+                          .toList();
+
                       return PostCard(
+                        nickname: post['author']['nickname'],
                         accountId: post['author']['account_id'],
                         logo: post['author']['logo'],
                         likes: post['likes'],
@@ -46,11 +55,8 @@ class ContentPage extends StatelessWidget {
                         content: post['content'],
                         id: post['id'],
                         author: post['author']['nickname'],
-                        thumbnail: post['thumbnail'],
-                        tags: (post['tags'] as String)
-                        .split('#')
-                        .where((tag) => tag.isNotEmpty)
-                        .toList(),
+                        thumbnail: thumbnailUrl,
+                        tags: tags,
                         title: post['title'],
                         followers: post['author']['followers'],
                       );
@@ -65,3 +71,4 @@ class ContentPage extends StatelessWidget {
     );
   }
 }
+

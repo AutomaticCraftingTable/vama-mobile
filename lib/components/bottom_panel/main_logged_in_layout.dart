@@ -25,6 +25,11 @@ class _MainLoggedInLayoutState extends State<MainLoggedInLayout> {
   ];
 
   void _onTap(int index) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    if (!authProvider.hasProfile && index != 0) {
+      Navigator.pushNamed(context, '/settings');
+      return;
+    }
     setState(() {
       _currentIndex = index;
     });

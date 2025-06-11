@@ -22,7 +22,6 @@ class ArticleActionBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween, 
         children: [
-  
           Padding(
             padding: const EdgeInsets.only(left: 32), 
             child: FloatingActionButton(

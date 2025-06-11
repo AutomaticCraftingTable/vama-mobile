@@ -4,8 +4,10 @@ class UserProfile {
   final String description;
   final int followers;
   final List<Article> articles;
+  final int id;
 
   UserProfile({
+    required this.id,
     required this.nickname,
     required this.logo,
     required this.description,
@@ -22,6 +24,9 @@ class UserProfile {
         .toList();
 
     return UserProfile(
+      id:data['id'] is int
+          ? data['id']
+          : int.tryParse(data['id'].toString()) ?? 0,
       nickname: data['nickname'] ?? '',
       logo: data['logo'] ?? '',
       description: data['description'] ?? '',

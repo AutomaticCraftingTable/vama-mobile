@@ -12,8 +12,6 @@ class GuestHeader extends StatefulWidget {
 }
 
 class _GuestHeaderState extends State<GuestHeader> {
-  bool _isSearching = false;
-  final TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +30,7 @@ class _GuestHeaderState extends State<GuestHeader> {
               constraints: const BoxConstraints(),
             ),
             
-             if (!_isSearching)
+           
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: GestureDetector(
@@ -54,46 +52,6 @@ class _GuestHeaderState extends State<GuestHeader> {
 
 
           const Spacer(),
-
-          if (_isSearching)
-            Expanded(
-              flex: 5,
-              child: TextField(
-                controller: _searchController,
-                autofocus: true,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: LightTheme.buttonGrey,
-                  filled: true,
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      _searchController.clear();
-                      setState(() => _isSearching = false);
-                    },
-                  ),
-                ),
-                onSubmitted: (value) {
-                  print("Szukaj: $value"); 
-                },
-              ),
-            )
-          else
-            IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                setState(() => _isSearching = true);
-              },
-            ),
 
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),

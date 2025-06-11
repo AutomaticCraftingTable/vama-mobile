@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 
 class SubscriptionCardFactory {
   static Widget create(BuildContext context, Map<String, dynamic> subscription) {
-    final accountId = subscription['author']['account_id'];
-
+    final nickname = subscription['author']['nickname'];
     return InkWell(
       onTap: () {
         Navigator.pushNamed(
           context,
           '/profile',
-          arguments: accountId,
+          arguments: nickname,
         );
       },
       child: Card(
@@ -41,6 +40,7 @@ class SubscriptionCardFactory {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(color: Colors.grey),
                     ),
+                    
                   ],
                 ),
               ),
