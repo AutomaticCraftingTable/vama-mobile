@@ -14,6 +14,10 @@ class AuthProvider with ChangeNotifier {
   bool get isModerator => _isModerator;
 
 
+  bool _isModerator = false;
+  bool get isModerator => _isModerator;
+
+
   int? _Id;
   int? get Id => _Id;
 

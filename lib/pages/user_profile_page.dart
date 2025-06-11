@@ -3,8 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:vama_mobile/api/api_service.dart';
 import 'package:vama_mobile/components/%D1%81ustom_snack_bar.dart';
 import 'package:vama_mobile/provider/auth_provider.dart';
+import 'package:vama_mobile/components/%D1%81ustom_snack_bar.dart';
+import 'package:vama_mobile/provider/auth_provider.dart';
 import 'package:vama_mobile/components/buttons/custom_buttons.dart';
 import 'package:vama_mobile/components/headers/header.dart';
+import 'package:vama_mobile/models/userProfileModel.dart';
+import 'package:vama_mobile/pages/article_detail_page.dart';
 import 'package:vama_mobile/models/userProfileModel.dart';
 import 'package:vama_mobile/pages/article_detail_page.dart';
 import 'package:vama_mobile/theme/light_theme.dart';
@@ -126,11 +130,14 @@ Future<void> toggleSubscription() async {
           final profile = snapshot.data!;
           return SingleChildScrollView(
             padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Header(),
+                const SizedBox(height: 16),
                 const SizedBox(height: 16),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -221,11 +228,13 @@ Future<void> toggleSubscription() async {
                                     'Zgłoszenie profilu',
                                   );
                                   showCustomSnackBar(context, 'Profil został zgłoszony');
+                                  showCustomSnackBar(context, 'Profil został zgłoszony');
                                 } catch (e) {
                                   showCustomSnackBar(context, 'Nie udało się zgłosić Profilu');                               
                                 }
                               }
                             },
+                            itemBuilder: (BuildContext context) => [
                             itemBuilder: (BuildContext context) => [
                               const PopupMenuItem<String>(
                                 value: 'report',

@@ -5,8 +5,13 @@ import 'package:vama_mobile/components/%D1%81ustom_snack_bar.dart';
 import 'package:vama_mobile/components/article_items/article_author_card.dart';
 import 'package:vama_mobile/provider/auth_provider.dart';
 import 'package:vama_mobile/components/article_items/comment_item.dart';
+import 'package:vama_mobile/components/%D1%81ustom_snack_bar.dart';
+import 'package:vama_mobile/components/article_items/article_author_card.dart';
+import 'package:vama_mobile/provider/auth_provider.dart';
+import 'package:vama_mobile/components/article_items/comment_item.dart';
 import 'package:vama_mobile/components/headers/header.dart';
 import 'package:vama_mobile/theme/light_theme.dart';
+import 'package:vama_mobile/components/article_items/article_action_bar.dart';
 import 'package:vama_mobile/components/article_items/article_action_bar.dart';
 
 class ArticleDetailPage extends StatefulWidget {
@@ -92,6 +97,17 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
     return;
   }
 
+  void addComment() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    if (!authProvider.isLoggedIn) {
+      Navigator.pushNamed(context, '/login');
+      return;
+    }
+    if (!authProvider.hasProfile) {
+      Navigator.pushNamed(context, '/settings');
+      return;
+    }
+
   final text = commentController.text.trim();
   if (text.isEmpty) return;
 
@@ -173,6 +189,7 @@ setState(() {
         child: Column(
           children: [
             const Header(),
+
             Expanded(
               child: FutureBuilder<Map<String?, dynamic>>(
                 future: articleFuture,
@@ -240,6 +257,7 @@ setState(() {
                         Text(
                           "Komentarzy: ${article?['comments']?.length ?? 0}",
                           style: const TextStyle(
+                            fontSize: 16,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: LightTheme.text,
